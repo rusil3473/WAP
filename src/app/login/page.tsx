@@ -13,7 +13,7 @@ export default function Login() {
     try {
       if (user.email && user.password) {
         await axios.post("/api/users/login", user);
-        router.push("/search");
+        router.push("/dashboard");
       } else {
         alert("Please fill in both fields.");
       }

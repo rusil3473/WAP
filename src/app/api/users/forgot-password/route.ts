@@ -12,7 +12,8 @@ export async function POST(req:NextRequest) {
     if(!user){
       return NextResponse.json({message:"There is no account detected with this email "},{status:400})
     }
-    sendMail({_id:user._id,email,requestType:"RESET"})
+  await  sendMail({_id:user._id,email,requestType:"RESET"})
+    return NextResponse.json({messgage:"Email sent succefully",success:true},{status:200})
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error:any) {
     return NextResponse.json({messgae:error},{status:500})

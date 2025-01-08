@@ -22,6 +22,7 @@ export default function Home() {
       <header className="w-full bg-white shadow-md">
         <nav className="container mx-auto flex items-center justify-between p-6">
           <h1 className="text-2xl font-bold text-blue-700">Warehouse Platform</h1>
+          <div className="flex gap-3">
           <Link
             href="/login"
             className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
@@ -34,6 +35,7 @@ export default function Home() {
           >
             Signup
           </Link>
+          </div>
         </nav>
       </header>
 

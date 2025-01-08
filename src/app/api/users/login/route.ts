@@ -11,7 +11,7 @@ export async function POST(req:NextRequest){
     const reqBody=await req.json();
     const {email,password}=reqBody;
     const user=await User.findOne({email})
-    console.log(user)
+   
     if(!user){
       return NextResponse.json({messgage:"No such user"},{status:400})
     }
@@ -27,7 +27,7 @@ export async function POST(req:NextRequest){
      role:user.role,
      isVerified:user.isVerified
     }
-    console.log(data)
+    
     const cookie=await cookies();
     const token=jwt.sign(data,process.env.SECRET!);
     cookie.set("token",token);

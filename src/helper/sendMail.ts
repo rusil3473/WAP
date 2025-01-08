@@ -12,7 +12,7 @@ export async function sendMail({ _id, email, requestType }: any) {
       await User.findByIdAndUpdate(_id, { verifyToken: token, verifyTokenExpiry:Date.now()+86400000 });
     }
     if (requestType === "RESET") {
-      await User.findByIdAndUpdate(_id, { verifyToken: token,  });
+      await User.findByIdAndUpdate(_id, { forgotToken: token,forgotTokenExpiry:Date.now()+86400000  });
     }
     const mailOption = {
       from: "rusilvaru555@gmail.com",
