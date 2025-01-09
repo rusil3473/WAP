@@ -1,21 +1,36 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import axios from "axios";
 export default function Home() {
-  const [isLogin, setIsLogin] = useState(false);
+ 
   const router = useRouter();
+  const getUserInfo = async (token: string) => {
+    try {
+      const res = await axios.post("api/users/getUserInfo", { token })
+      const data = res.data.data;
+      if (data.role === "customer") {
+        router.push("/dashboard/user")
+      }
+      else if (data.role === "admin") {
+        router.push("/admin")
+      }
+      else if (data.role === "owner") {
+        router.push("/dashboard/owner")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    if (isLogin) {
-      router.push("/search");
-    }
-  }, [isLogin, router]);
+    const t = document.cookie.split("=")[1]
+    getUserInfo(t);
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  if (isLogin) {
-    return null;
-  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
@@ -23,18 +38,18 @@ export default function Home() {
         <nav className="container mx-auto flex items-center justify-between p-6">
           <h1 className="text-2xl font-bold text-blue-700">Warehouse Platform</h1>
           <div className="flex gap-3">
-          <Link
-            href="/login"
-            className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
-          >
-            Signup
-          </Link>
+            <Link
+              href="/login"
+              className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+            >
+              Signup
+            </Link>
           </div>
         </nav>
       </header>
@@ -69,7 +84,7 @@ export default function Home() {
         <Link
           href="/login"
           className="px-8 py-3 bg-blue-500 text-white font-medium text-lg rounded-lg shadow hover:bg-blue-600"
-          onClick={() => setIsLogin(false)}
+
         >
           Login to Get Started
         </Link>

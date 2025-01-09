@@ -17,9 +17,6 @@ export default function CustomerDashboard() {
         <div className="container mx-auto flex justify-between items-center py-4 px-6">
           <h1 className="text-2xl font-bold">Warehouse Aggregation</h1>
           <nav className="space-x-6">
-            <Link href="/" className="hover:underline">
-              Home
-            </Link>
             <Link href="/search" className="hover:underline">
               Search
             </Link>

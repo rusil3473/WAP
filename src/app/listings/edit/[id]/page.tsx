@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter,useParams } from "next/navigation";
 import axios from "axios";
 
-export default function EditWarehousePage({ params }: { params: { id: string } }) {
+export default function EditWarehousePage() {
+  const params=useParams();
+ 
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -18,21 +20,29 @@ export default function EditWarehousePage({ params }: { params: { id: string } }
   });
 
   const router = useRouter();
-
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  
   // Fetch warehouse data by ID
   const fetchWarehouse = async () => {
     try {
-      const res = await axios.get(`/api/users/getWarehouses/${params.id}`);
-      const data = res.data;
+      const res = await axios.get(`/api/users/owner/listings/edit/${params.id}`);
+      const data = res.data.data;
+    
       setFormData({
         name: data.name,
-        address: data.address,
+        address: data.location,
         capacity: data.capacity,
         pricePerDay: data.pricePerDay,
         pricePerMonth: data.pricePerMonth,
-        facilities: data.facilities.join(", "),
-        startDate: data.startDate,
-        endDate: data.endDate,
+        facilities: data.facilities,
+        startDate: formatDate(data.startDate),
+        endDate: formatDate(data.endDate),
         photos: data.photos,
         status: data.status,
       });
@@ -59,11 +69,7 @@ export default function EditWarehousePage({ params }: { params: { id: string } }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/warehouses/${params.id}`, {
-        ...formData,
-        facilities: formData.facilities.split(",").map((f) => f.trim()),
-        photos: formData.photos.split(",").map((p) => p.trim()),
-      });
+      await axios.put(`/api/users/owner/listings/edit/${params.id}`, formData);
       router.push("/listings");
     } catch (error) {
       console.error("Error updating warehouse:", error);

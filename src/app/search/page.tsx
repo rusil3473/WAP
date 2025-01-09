@@ -1,33 +1,92 @@
-"use client"
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-const warehouses = [
-  { id: 1, name: "Warehouse A", location: "New York", price: "$500/month" },
-  { id: 2, name: "Warehouse B", location: "Los Angeles", price: "$400/month" },
-  { id: 3, name: "Warehouse C", location: "Chicago", price: "$300/month" },
-  { id: 4, name: "Warehouse D", location: "San Francisco", price: "$600/month" },
-  { id: 5, name: "Warehouse E", location: "Miami", price: "$450/month" },
-  { id: 6, name: "Warehouse F", location: "Dallas", price: "$350/month" },
-  { id: 7, name: "Warehouse G", location: "Houston", price: "$500/month" },
-  { id: 8, name: "Warehouse H", location: "Boston", price: "$550/month" },
-  { id: 9, name: "Warehouse I", location: "Seattle", price: "$475/month" },
-  { id: 10, name: "Warehouse J", location: "Atlanta", price: "$400/month" }
-];
-
+type warehouseObject = {
+  _id: string;
+  name: string;
+  pricePerMonth: string;
+  pricePerDay: string;
+  capacity: string;
+  status: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+};
 
 export default function Search() {
+  const router = useRouter();
+  const [warehouses, setWarehouses] = useState([
+    { _id: "", location: "", name: "", capacity: "", pricePerMonth: "", status: "", pricePerDay: "", startDate: "", endDate: "" },
+  ]);
   const [searchTerm, setSearchTerm] = useState("");
-  const filteredWarehouses = warehouses.filter((warehouse) =>
-    warehouse.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [filters, setFilters] = useState({
+    startDate: "",
+    endDate: "",
+    capacity: "",
+    pricePerDay: "",
+    pricePerMonth: "",
+  });
+
+  const filteredWarehouses = warehouses.filter((warehouse) => {
+    const matchesSearch = warehouse.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCapacity = filters.capacity === "" || parseInt(warehouse.capacity) >= parseInt(filters.capacity);
+    const matchesPricePerDay = filters.pricePerDay === "" || parseInt(warehouse.pricePerDay) <= parseInt(filters.pricePerDay);
+    const matchesPricePerMonth = filters.pricePerMonth === "" || parseInt(warehouse.pricePerMonth) <= parseInt(filters.pricePerMonth);
+    const matchesDate = filters.startDate === "" || filters.startDate === "" || ((warehouse.startDate <= filters.startDate && warehouse.endDate >= filters.startDate) && (warehouse.startDate <= filters.endDate && warehouse.endDate >= filters.endDate));
+    return matchesSearch && matchesCapacity && matchesPricePerDay && matchesPricePerMonth && matchesDate;
+  });
+
+  const handleWarehouse = async (id: string) => {
+    router.push(`/search/${id}`);
+  };
+
+  const getWarehouse = async () => {
+    try {
+      const res = await axios.post("/api/users/getWarehouse", {});
+      setWarehouses(() => {
+        const data = res.data.Warehouse.map((obj: warehouseObject) => {
+          const { _id, location, name, capacity, pricePerMonth, status, pricePerDay, startDate, endDate } = obj;
+          return { _id, location, name, capacity, pricePerMonth, status, pricePerDay, startDate, endDate };
+        });
+        return data;
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getWarehouse();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-blue-500 text-white py-4">
-        <h1 className="text-center text-3xl font-bold">Search Warehouses</h1>
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Search Warehouses</h1>
+          <nav className="space-x-6">
+            <button
+              onClick={() => router.push("/dashboard/user")}
+              className="px-4 py-2 bg-gray-300 text-blue-700 rounded-lg hover:bg-gray-400"
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => router.push("/profile")}
+              className="px-4 py-2 bg-gray-300 text-blue-700 rounded-lg hover:bg-gray-400"
+            >
+              Profile
+            </button>
+          </nav>
+        </div>
       </header>
+
       <main className="flex-grow container mx-auto py-8">
-        <div className="mb-6">
+        {/* Search and Filter Section */}
+        <div className="flex justify-between items-center mb-6">
           <input
             type="text"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -35,17 +94,97 @@ export default function Search() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <button
+            onClick={() => setFilterVisible(!filterVisible)}
+            className="ml-4 px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600"
+          >
+            Filter
+          </button>
         </div>
+
+        {/* Filter Options */}
+        {filterVisible && (
+          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="startDate" className="block text-gray-700 font-medium mb-1">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  id="startDate"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                  value={filters.startDate}
+                  onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="endDate" className="block text-gray-700 font-medium mb-1">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  id="endDate"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                  value={filters.endDate}
+                  onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="capacity" className="block text-gray-700 font-medium mb-1">
+                  Capacity (sq. ft.)
+                </label>
+                <input
+                  type="number"
+                  id="capacity"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                  placeholder="Minimum capacity"
+                  value={filters.capacity}
+                  onChange={(e) => setFilters({ ...filters, capacity: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="pricePerDay" className="block text-gray-700 font-medium mb-1">
+                  Price Per Day
+                </label>
+                <input
+                  type="number"
+                  id="pricePerDay"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                  placeholder="Maximum price per day"
+                  value={filters.pricePerDay}
+                  onChange={(e) => setFilters({ ...filters, pricePerDay: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="pricePerMonth" className="block text-gray-700 font-medium mb-1">
+                  Price Per Month
+                </label>
+                <input
+                  type="number"
+                  id="pricePerMonth"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                  placeholder="Maximum price per month"
+                  value={filters.pricePerMonth}
+                  onChange={(e) => setFilters({ ...filters, pricePerMonth: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Warehouse Listings */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredWarehouses.length > 0 ? (
             filteredWarehouses.map((warehouse) => (
               <div
-                key={warehouse.id}
-                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg"
+                key={warehouse._id}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer"
+                onClick={() => handleWarehouse(warehouse._id)}
               >
                 <h2 className="text-xl font-bold text-blue-700">{warehouse.name}</h2>
                 <p className="text-gray-600">Location: {warehouse.location}</p>
-                <p className="text-gray-600">Price: {warehouse.price}</p>
+                <p className="text-gray-600">Price: ₹{warehouse.pricePerMonth}/month</p>
               </div>
             ))
           ) : (

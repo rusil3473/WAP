@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       name, owner, location: address, capacity, pricePerDay, pricePerMonth, facilities, startDate, endDate, photos, status
     });
 
-    return NextResponse.json({ message: "SUccess " }, { status: 201 })
+    return NextResponse.json({ message: "Success " }, { status: 201 })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ message: "Error while adding the warehouse to list " }, { status: 500 })
