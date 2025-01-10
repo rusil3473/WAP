@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter,useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
 
 export default function EditWarehousePage() {
-  const params=useParams();
- 
+  const params = useParams();
+
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -13,27 +16,19 @@ export default function EditWarehousePage() {
     pricePerDay: "",
     pricePerMonth: "",
     facilities: "",
-    startDate: "",
-    endDate: "",
+    startDate: null as Date | null,
+    endDate: null as Date | null,
     photos: "",
     status: "available",
   });
 
   const router = useRouter();
-  const formatDate = (isoDate: string) => {
-    const date = new Date(isoDate);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-  
-  // Fetch warehouse data by ID
+
   const fetchWarehouse = async () => {
     try {
       const res = await axios.get(`/api/users/owner/listings/edit/${params.id}`);
       const data = res.data.data;
-    
+
       setFormData({
         name: data.name,
         address: data.location,
@@ -41,8 +36,8 @@ export default function EditWarehousePage() {
         pricePerDay: data.pricePerDay,
         pricePerMonth: data.pricePerMonth,
         facilities: data.facilities,
-        startDate: formatDate(data.startDate),
-        endDate: formatDate(data.endDate),
+        startDate: new Date(data.startDate),
+        endDate: new Date(data.endDate),
         photos: data.photos,
         status: data.status,
       });
@@ -53,10 +48,9 @@ export default function EditWarehousePage() {
 
   useEffect(() => {
     fetchWarehouse();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -65,11 +59,14 @@ export default function EditWarehousePage() {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/users/owner/listings/edit/${params.id}`, formData);
+      await axios.put(`/api/users/owner/listings/edit/${params.id}`, {
+        ...formData,
+        startDate: formData.startDate ? format(formData.startDate, "yyyy-MM-dd") : null,
+        endDate: formData.endDate ? format(formData.endDate, "yyyy-MM-dd") : null,
+      });
       router.push("/listings");
     } catch (error) {
       console.error("Error updating warehouse:", error);
@@ -180,12 +177,11 @@ export default function EditWarehousePage() {
             <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
               Start Date
             </label>
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleChange}
+            <DatePicker
+              selected={formData.startDate}
+              minDate={new Date()}
+              onChange={(date) => setFormData((prev) => ({ ...prev, startDate: date }))}
+              dateFormat="yyyy-MM-dd"
               className="w-full p-2 border border-gray-300 rounded-md"
               required
             />
@@ -195,12 +191,10 @@ export default function EditWarehousePage() {
             <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
               End Date
             </label>
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleChange}
+            <DatePicker
+              selected={formData.endDate}
+              onChange={(date) => setFormData((prev) => ({ ...prev, endDate: date }))}
+              dateFormat="yyyy-MM-dd"
               className="w-full p-2 border border-gray-300 rounded-md"
               required
             />

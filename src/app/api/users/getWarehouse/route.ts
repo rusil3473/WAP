@@ -29,9 +29,10 @@ export async function POST(req:NextRequest){
     const warehouseById=await Warehouse.find({owner:id});
     return NextResponse.json({message:"All warehouse with given id are sent ",Warehouse:warehouseById},{status:200})
     
-  } catch (error) {
+  }catch (error) {
     console.log(error)
     return NextResponse.json({messgae:"Error while getting data"},{status:500})
   }
+
 
 }

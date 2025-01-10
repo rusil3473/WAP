@@ -2,7 +2,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import Link from "next/link";
+
+/* import Image from "next/image"; */
+import { useRouter } from "next/navigation";
+
+
 export default function WarehouseDetailsPage() {
   const [warehouse, setWarehouses] = useState({
     _id: "",
@@ -17,6 +21,7 @@ export default function WarehouseDetailsPage() {
   });
 
   const params = useParams();
+  const router = useRouter();
 
   const fetchWarehouses = async (_id: string) => {
     try {
@@ -37,20 +42,37 @@ export default function WarehouseDetailsPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-blue-600 text-white shadow-md">
-        <div className="container mx-auto py-4 px-6 flex flex-row items-center justify-between">
+        <div className="container mx-auto py-4 px-6 flex flex-row items-center justify-between ">
           <h1 className="text-3xl font-bold ">{warehouse.name}</h1>
-          <Link href="/search" className="hover:underline ">
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.push("/search")}
+              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+            >
               Search
-          </Link>
+            </button>
+            <button
+              onClick={() => router.push("/dashboard/user")}
+              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => router.push("/profile")}
+              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+            >
+              Profile
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="container mx-auto py-8 px-6">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Image Gallery Section */}
-          <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
+          {/* <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
             {warehouse.photos.length > 0 ? (
-              <img
+              <Image
                 src={warehouse.photos[0]}
                 alt="Warehouse"
                 className="w-full h-auto rounded-lg"
@@ -60,7 +82,7 @@ export default function WarehouseDetailsPage() {
                 <span className="text-gray-700">No Photos Available</span>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Warehouse Details Section */}
           <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
@@ -81,11 +103,10 @@ export default function WarehouseDetailsPage() {
               <strong>Facilities:</strong> {warehouse.facilities}
             </p>
             <p
-              className={`text-gray-600 mb-2 ${
-                warehouse.status === "available"
+              className={`text-gray-600 mb-2 ${warehouse.status === "available"
                   ? "text-green-500"
                   : "text-red-500"
-              }`}
+                }`}
             >
               <strong>Status:</strong> {warehouse.status}
             </p>
@@ -94,7 +115,7 @@ export default function WarehouseDetailsPage() {
             <div className="mt-8">
               <button
                 className="w-full px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 mb-4"
-                onClick={() => alert("Booking warehouse...")}
+                onClick={() => router.push(`/book/${warehouse._id}`)}
               >
                 Book Now
               </button>

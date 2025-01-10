@@ -2,6 +2,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 type warehouseObject = {
   _id: string;
@@ -23,8 +26,8 @@ export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterVisible, setFilterVisible] = useState(false);
   const [filters, setFilters] = useState({
-    startDate: "",
-    endDate: "",
+    startDate: null as Date | null,
+    endDate: null as Date | null,
     capacity: "",
     pricePerDay: "",
     pricePerMonth: "",
@@ -35,7 +38,10 @@ export default function Search() {
     const matchesCapacity = filters.capacity === "" || parseInt(warehouse.capacity) >= parseInt(filters.capacity);
     const matchesPricePerDay = filters.pricePerDay === "" || parseInt(warehouse.pricePerDay) <= parseInt(filters.pricePerDay);
     const matchesPricePerMonth = filters.pricePerMonth === "" || parseInt(warehouse.pricePerMonth) <= parseInt(filters.pricePerMonth);
-    const matchesDate = filters.startDate === "" || filters.startDate === "" || ((warehouse.startDate <= filters.startDate && warehouse.endDate >= filters.startDate) && (warehouse.startDate <= filters.endDate && warehouse.endDate >= filters.endDate));
+    const matchesDate =
+      (!filters.startDate || new Date(warehouse.startDate) <= filters.startDate) &&
+      (!filters.endDate || new Date(warehouse.endDate) >= filters.endDate);
+
     return matchesSearch && matchesCapacity && matchesPricePerDay && matchesPricePerMonth && matchesDate;
   });
 
@@ -70,13 +76,13 @@ export default function Search() {
           <nav className="space-x-6">
             <button
               onClick={() => router.push("/dashboard/user")}
-              className="px-4 py-2 bg-gray-300 text-blue-700 rounded-lg hover:bg-gray-400"
+              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
             >
               Dashboard
             </button>
             <button
               onClick={() => router.push("/profile")}
-              className="px-4 py-2 bg-gray-300 text-blue-700 rounded-lg hover:bg-gray-400"
+              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
             >
               Profile
             </button>
@@ -110,24 +116,24 @@ export default function Search() {
                 <label htmlFor="startDate" className="block text-gray-700 font-medium mb-1">
                   Start Date
                 </label>
-                <input
-                  type="date"
-                  id="startDate"
+                <DatePicker
+                  selected={filters.startDate}
+                  onChange={(date) => setFilters({ ...filters, startDate: date })}
+                  minDate={new Date()}
+                  dateFormat="yyyy-MM-dd"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
-                  value={filters.startDate}
-                  onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
                 />
               </div>
               <div>
                 <label htmlFor="endDate" className="block text-gray-700 font-medium mb-1">
                   End Date
                 </label>
-                <input
-                  type="date"
-                  id="endDate"
+                <DatePicker
+                  selected={filters.endDate}
+                  onChange={(date) => setFilters({ ...filters, endDate: date })}
+                  minDate={filters.startDate || new Date()}
+                  dateFormat="yyyy-MM-dd"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
-                  value={filters.endDate}
-                  onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
                 />
               </div>
               <div>
