@@ -13,6 +13,8 @@ type warehouseObject = {
 };
 
 export default function ListingsPage() {
+  const [token,setToken]=useState("");
+
   const [warehouses, setWarehouses] = useState([
     { _id: "", location: "", name: "", capacity: "", pricePerMonth: "", status: "" },
   ]);
@@ -48,7 +50,12 @@ export default function ListingsPage() {
 
   useEffect(() => {
     const t = document.cookie.split("=")[1];
+    if(t){
+      console.log(t);
+      setToken(t);
     getWarehouse(t);
+  }
+
   }, []);
 
   return (
@@ -77,7 +84,7 @@ export default function ListingsPage() {
           </Link>
         </div>
 
-        {warehouses.length > 0 ? (
+        {(warehouses.length > 0 && token) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {warehouses.map((warehouse) => (
               <div key={warehouse._id} className="bg-white p-6 rounded-lg shadow-md">
