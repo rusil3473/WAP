@@ -29,9 +29,10 @@ export async function POST(req:NextRequest){
     const warehouseById=await Warehouse.find({owner:id});
     return NextResponse.json({message:"All warehouse with given id are sent ",Warehouse:warehouseById},{status:200})
     
-  }catch (error) {
-    console.log(error)
-    return NextResponse.json({messgae:"Error while getting data"},{status:500})
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }catch (error:any) {
+      console.error("Error during PUT request:", error);
+      return NextResponse.json({ message: "Error while changing the data", error: error.message }, { status: 500 });
   }
 
 
