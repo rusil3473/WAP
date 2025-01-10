@@ -29,11 +29,7 @@ export default function CustomerDashboard() {
 
             {/* Navigation Links */}
             <div
-              className={`absolute left-0 top-full w-auto bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"
-                }`}
-              style={{
-                left: menuOpen ? "0" : "-100%", // Moves the menu to the left when closed
-              }}
+              className={`absolute left-0 top-full w-full bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"}`}
             >
               <Link
                 href="/search"
