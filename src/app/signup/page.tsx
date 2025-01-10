@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState ,useEffect} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios"
+import axios from "axios";
 
 export default function Signup() {
   const [user, setUser] = useState({
@@ -12,23 +12,20 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: ""
+    role: "",
   });
   const [err, setErr] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     if (user.username && user.firstName && user.lastName && user.email && user.password) {
       try {
-        await axios.post("/api/users/signup", user)
+        await axios.post("/api/users/signup", user);
         router.push("/login");
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        console.log(error)
+      } catch (error) {
+        console.log(error);
       }
-
     } else {
       alert("Please fill in all fields.");
     }
@@ -43,11 +40,10 @@ export default function Signup() {
   }, [user.confirmPassword, user.password]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-blue-700 text-center mb-6">Create Your Account</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-blue-700">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300">
+        <h1 className="text-3xl font-bold text-blue-700 text-center mb-6">Create Your Account</h1>
         <form onSubmit={handleSubmit}>
-
           <div className="mb-4">
             <label htmlFor="firstName" className="block text-gray-700 font-medium mb-2">
               First Name
@@ -55,7 +51,7 @@ export default function Signup() {
             <input
               type="text"
               id="firstName"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your first name"
               value={user.firstName}
               onChange={(e) => setUser({ ...user, firstName: e.currentTarget.value })}
@@ -69,7 +65,7 @@ export default function Signup() {
             <input
               type="text"
               id="lastName"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your last name"
               value={user.lastName}
               onChange={(e) => setUser({ ...user, lastName: e.currentTarget.value })}
@@ -83,7 +79,7 @@ export default function Signup() {
             <input
               type="text"
               id="username"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your username"
               value={user.username}
               onChange={(e) => setUser({ ...user, username: e.currentTarget.value })}
@@ -96,7 +92,7 @@ export default function Signup() {
             </label>
             <select
               id="role"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={user.role}
               onChange={(e) => setUser({ ...user, role: e.currentTarget.value })}
               required
@@ -116,7 +112,7 @@ export default function Signup() {
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
               value={user.email}
               onChange={(e) => setUser({ ...user, email: e.currentTarget.value })}
@@ -130,7 +126,7 @@ export default function Signup() {
             <input
               type="password"
               id="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
               value={user.password}
               onChange={(e) => setUser({ ...user, password: e.currentTarget.value })}
@@ -144,7 +140,7 @@ export default function Signup() {
             <input
               type="password"
               id="confirmPassword"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Confirm your password"
               value={user.confirmPassword}
               onChange={(e) => setUser({ ...user, confirmPassword: e.currentTarget.value })}
@@ -154,17 +150,19 @@ export default function Signup() {
           {err ? <p className="text-red-600">Password does not match</p> : ""}
           <button
             type="submit"
-            className="w-full px-6 py-3 bg-blue-500 text-white font-medium text-lg rounded-lg shadow hover:bg-blue-600 focus:ring-4 focus:ring-blue-300"
+            className="w-full px-6 py-3 bg-blue-500 text-white font-medium text-lg rounded-lg shadow-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition duration-300"
           >
             Sign Up
           </button>
         </form>
-        <p className="text-center text-gray-600 mt-6">
-          Already have an account?{" "}
-          <Link href="/login" className="text-blue-500 font-medium hover:underline">
-            Login
-          </Link>
-        </p>
+        <div className="text-center text-gray-600 mt-6">
+          <p>
+            Already have an account?{" "}
+            <Link href="/login" className="text-blue-500 font-medium hover:underline">
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

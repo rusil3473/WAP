@@ -1,16 +1,16 @@
-"use client";
+"use client"
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-
 type warehouseObject = {
   _id: string;
   name: string;
   pricePerMonth: string;
-  pricePerDay: string;
+ 
   capacity: string;
   status: string;
   location: string;
@@ -21,7 +21,7 @@ type warehouseObject = {
 export default function Search() {
   const router = useRouter();
   const [warehouses, setWarehouses] = useState([
-    { _id: "", location: "", name: "", capacity: "", pricePerMonth: "", status: "", pricePerDay: "", startDate: "", endDate: "" },
+    { _id: "", location: "", name: "", capacity: "", pricePerMonth: "", status: "",  startDate: "", endDate: "" },
   ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterVisible, setFilterVisible] = useState(false);
@@ -29,20 +29,20 @@ export default function Search() {
     startDate: null as Date | null,
     endDate: null as Date | null,
     capacity: "",
-    pricePerDay: "",
+
     pricePerMonth: "",
   });
 
   const filteredWarehouses = warehouses.filter((warehouse) => {
     const matchesSearch = warehouse.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCapacity = filters.capacity === "" || parseInt(warehouse.capacity) >= parseInt(filters.capacity);
-    const matchesPricePerDay = filters.pricePerDay === "" || parseInt(warehouse.pricePerDay) <= parseInt(filters.pricePerDay);
+    
     const matchesPricePerMonth = filters.pricePerMonth === "" || parseInt(warehouse.pricePerMonth) <= parseInt(filters.pricePerMonth);
     const matchesDate =
       (!filters.startDate || new Date(warehouse.startDate) <= filters.startDate) &&
       (!filters.endDate || new Date(warehouse.endDate) >= filters.endDate);
 
-    return matchesSearch && matchesCapacity && matchesPricePerDay && matchesPricePerMonth && matchesDate;
+    return matchesSearch && matchesCapacity  && matchesPricePerMonth && matchesDate;
   });
 
   const handleWarehouse = async (id: string) => {
@@ -54,8 +54,8 @@ export default function Search() {
       const res = await axios.post("/api/users/getWarehouse", {});
       setWarehouses(() => {
         const data = res.data.Warehouse.map((obj: warehouseObject) => {
-          const { _id, location, name, capacity, pricePerMonth, status, pricePerDay, startDate, endDate } = obj;
-          return { _id, location, name, capacity, pricePerMonth, status, pricePerDay, startDate, endDate };
+          const { _id, location, name, capacity, pricePerMonth, status, startDate, endDate } = obj;
+          return { _id, location, name, capacity, pricePerMonth, status, startDate, endDate };
         });
         return data;
       });
@@ -76,13 +76,13 @@ export default function Search() {
           <nav className="space-x-6">
             <button
               onClick={() => router.push("/dashboard/user")}
-              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+              className="px-4 py-2  text-white rounded-lg hover:bg-blue-600"
             >
               Dashboard
             </button>
             <button
               onClick={() => router.push("/profile")}
-              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+              className="px-4 py-2  text-white rounded-lg hover:bg-blue-600"
             >
               Profile
             </button>
@@ -102,7 +102,7 @@ export default function Search() {
           />
           <button
             onClick={() => setFilterVisible(!filterVisible)}
-            className="ml-4 px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600"
+            className="ml-4 px-4 py-2 bg-blue-700 text-white font-medium rounded-lg hover:bg-blue-600"
           >
             Filter
           </button>
@@ -149,19 +149,7 @@ export default function Search() {
                   onChange={(e) => setFilters({ ...filters, capacity: e.target.value })}
                 />
               </div>
-              <div>
-                <label htmlFor="pricePerDay" className="block text-gray-700 font-medium mb-1">
-                  Price Per Day
-                </label>
-                <input
-                  type="number"
-                  id="pricePerDay"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
-                  placeholder="Maximum price per day"
-                  value={filters.pricePerDay}
-                  onChange={(e) => setFilters({ ...filters, pricePerDay: e.target.value })}
-                />
-              </div>
+              
               <div>
                 <label htmlFor="pricePerMonth" className="block text-gray-700 font-medium mb-1">
                   Price Per Month

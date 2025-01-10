@@ -6,6 +6,11 @@ const bookingSchema = new mongoose.Schema(
       ref: 'Customer', 
       required: true
     },
+    ownerId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Owner',
+      required: true
+    },
     warehouseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Warehouse',
@@ -36,6 +41,10 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       enum: ['pending', 'paid', 'failed'],
       default: 'pending'
+    },
+    storageDetails:{
+      type:String,
+      default:""
     }
   }
 );

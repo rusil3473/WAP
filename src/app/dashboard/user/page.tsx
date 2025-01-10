@@ -1,43 +1,77 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function CustomerDashboard() {
   const customerData = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    totalBookings: 5,
-    activeBookings: 2,
-    totalPayments: "$2000",
+    name: "",
+    email: "",
+    totalBookings: 0,
+    activeBookings: 0,
+    totalPayments: 0,
   };
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Navigation Bar */}
       <header className="bg-blue-600 text-white shadow-md">
-        <div className="container mx-auto flex justify-between items-center py-4 px-6">
-          <h1 className="text-2xl font-bold">Warehouse Aggregation</h1>
-          <nav className="space-x-6">
-            <Link href="/search" className="hover:underline">
-              Search
-            </Link>
-            <Link href="/bookings" className="hover:underline">
-              Bookings
-            </Link>
-            <Link href="/payments" className="hover:underline">
-              Payments
-            </Link>
-            <Link href="/support" className="hover:underline">
-              Support
-            </Link>
-            <Link href="/profile" className="hover:underline">
-              Profile
-            </Link>
+        <div className="container mx-auto py-4 px-6 flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Warehouse Aggregation</h1>
+          <nav className="relative bg-blue-600 text-white">
+            {/* Toggle Button for Small Devices */}
+            <button
+              className="block md:hidden text-white text-2xl px-4 py-2"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              ☰
+            </button>
+
+            {/* Navigation Links */}
+            <div
+              className={`absolute left-0 top-full w-auto bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"
+                }`}
+              style={{
+                left: menuOpen ? "0" : "-100%", // Moves the menu to the left when closed
+              }}
+            >
+              <Link
+                href="/search"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Search
+              </Link>
+              <Link
+                href="/bookings"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Bookings
+              </Link>
+              <Link
+                href="/payments"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Payments
+              </Link>
+              <Link
+                href="/support"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Support
+              </Link>
+              <Link
+                href="/profile"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Profile
+              </Link>
+            </div>
           </nav>
         </div>
       </header>
 
       {/* Dashboard Content */}
-      <main className="container mx-auto py-8 px-6">
+      <main className="flex-grow container mx-auto py-8 px-6">
         {/* Welcome Section */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome, {customerData.name}</h2>

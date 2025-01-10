@@ -26,8 +26,10 @@ export default function Home() {
 
   useEffect(() => {
     const t = document.cookie.split("=")[1]
-    getUserInfo(t);
-  
+    if(t){
+      getUserInfo(t);
+    }
+   
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -49,6 +51,12 @@ export default function Home() {
               className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
             >
               Signup
+            </Link>
+            <Link
+              href="/search"
+              className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+            >
+              Search
             </Link>
           </div>
         </nav>

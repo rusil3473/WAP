@@ -19,10 +19,6 @@ const warehouseSchema = new mongoose.Schema(
       type: Number, // Capacity in square feet or cubic meters
       required: true,
     },
-    pricePerDay: {
-      type: Number, // Price per day
-      required: true,
-    },
     pricePerMonth: {
       type: Number, // Price per month
       required: true,

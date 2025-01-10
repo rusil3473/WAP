@@ -2,64 +2,60 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
-
-/* import Image from "next/image"; */
 import { useRouter } from "next/navigation";
 
-
 export default function WarehouseDetailsPage() {
-  const [warehouse, setWarehouses] = useState({
+  const [warehouse, setWarehouse] = useState({
     _id: "",
     name: "",
     location: "",
     capacity: "",
-    pricePerDay: "",
-    facilities: "",
+  
     pricePerMonth: "",
+    facilities: "",
     status: "",
-    photos: [], // For photos if needed
+    photos: [],
   });
 
   const params = useParams();
   const router = useRouter();
 
-  const fetchWarehouses = async (_id: string) => {
+  const fetchWarehouseDetails = async (_id: string) => {
     try {
       const res = await axios.post("/api/users/getWarehouse", { _id });
-      setWarehouses(res.data.Warehouse);
+      setWarehouse(res.data.Warehouse);
     } catch (error) {
-      console.error("Error fetching warehouses:", error);
+      console.error("Error fetching warehouse details:", error);
     }
   };
 
   useEffect(() => {
     if (typeof params.id === "string") {
-      const _id = params.id;
-      fetchWarehouses(_id);
+      fetchWarehouseDetails(params.id);
     }
   }, [params.id]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-blue-600 text-white shadow-md">
-        <div className="container mx-auto py-4 px-6 flex flex-row items-center justify-between ">
-          <h1 className="text-3xl font-bold ">{warehouse.name}</h1>
-          <div className="flex gap-3">
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 via-white to-blue-50">
+      <header className="bg-blue-600 text-white shadow-lg">
+        <div className="container mx-auto flex justify-between items-center py-4 px-6">
+          <h1 className="text-3xl font-semibold">{warehouse.name}</h1>
+          <div className="flex gap-4">
             <button
               onClick={() => router.push("/search")}
-              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+              className="text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Search
             </button>
             <button
               onClick={() => router.push("/dashboard/user")}
-              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+              className="text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Dashboard
             </button>
             <button
               onClick={() => router.push("/profile")}
-              className="px-4 py-2 bg-white text-blue-700 rounded-lg hover:bg-gray-400"
+              className="text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Profile
             </button>
@@ -68,66 +64,58 @@ export default function WarehouseDetailsPage() {
       </header>
 
       <main className="container mx-auto py-8 px-6">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Image Gallery Section */}
-          {/* <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
-            {warehouse.photos.length > 0 ? (
-              <Image
-                src={warehouse.photos[0]}
-                alt="Warehouse"
-                className="w-full h-auto rounded-lg"
-              />
-            ) : (
-              <div className="w-full h-64 bg-gray-300 rounded-lg flex items-center justify-center">
-                <span className="text-gray-700">No Photos Available</span>
-              </div>
-            )}
-          </div> */}
+        <div className="bg-white rounded-lg shadow-xl p-8">
+          <h2 className="text-2xl font-semibold mb-6">Warehouse Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-gray-700">
+                <strong>Location:</strong> {warehouse.location}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>Capacity:</strong> {warehouse.capacity} sq. ft.
+              </p>
+              
+              <p className="text-sm text-gray-700">
+                <strong>Price per Month:</strong> ₹{warehouse.pricePerMonth}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>Facilities:</strong> {warehouse.facilities}
+              </p>
+              <p className={`text-sm ${warehouse.status === "available" ? "text-green-600" : "text-red-600"}`}>
+                <strong>Status:</strong> {warehouse.status}
+              </p>
+            </div>
 
-          {/* Warehouse Details Section */}
-          <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Warehouse Details</h2>
-            <p className="text-gray-600 mb-2">
-              <strong>Location:</strong> {warehouse.location}
-            </p>
-            <p className="text-gray-600 mb-2">
-              <strong>Capacity:</strong> {warehouse.capacity} sq. ft.
-            </p>
-            <p className="text-gray-600 mb-2">
-              <strong>Price per Day:</strong> ₹{warehouse.pricePerDay}
-            </p>
-            <p className="text-gray-600 mb-2">
-              <strong>Price per Month:</strong> ₹{warehouse.pricePerMonth}
-            </p>
-            <p className="text-gray-600 mb-2">
-              <strong>Facilities:</strong> {warehouse.facilities}
-            </p>
-            <p
-              className={`text-gray-600 mb-2 ${warehouse.status === "available"
-                  ? "text-green-500"
-                  : "text-red-500"
-                }`}
-            >
-              <strong>Status:</strong> {warehouse.status}
-            </p>
+            <div className="flex flex-col gap-4">
+              {/* Add Image Section */}
+              {/*warehouse.photos.length > 0 ? (
+                <img
+                  src={warehouse.photos[0]}
+                  alt="Warehouse"
+                  className="w-full h-auto rounded-lg shadow-md"
+                />
+              ) : (
+                <div className="bg-gray-200 w-full h-64 rounded-lg flex items-center justify-center text-gray-600">
+                  No Photos Available
+                </div>
+              )*/}
 
-            {/* Action Buttons */}
-            <div className="mt-8">
+              {/* Action Buttons */}
               <button
-                className="w-full px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 mb-4"
                 onClick={() => router.push(`/book/${warehouse._id}`)}
+                className="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200"
               >
                 Book Now
               </button>
               <button
-                className="w-full px-6 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 mb-4"
-                onClick={() => alert("Saving warehouse...")}
+                onClick={() => alert("Saving warehouse for later...")}
+                className="w-full py-3 text-white bg-gray-500 rounded-lg hover:bg-gray-600 transition duration-200"
               >
                 Save for Later
               </button>
               <button
-                className="w-full px-6 py-3 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600"
-                onClick={() => alert("Contacting owner...")}
+                onClick={() => alert("Contacting the owner...")}
+                className="w-full py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 transition duration-200"
               >
                 Contact Owner
               </button>
@@ -136,7 +124,7 @@ export default function WarehouseDetailsPage() {
         </div>
       </main>
 
-      <footer className="bg-gray-300 text-center py-4">
+      <footer className="bg-gray-100 text-center py-4">
         <p className="text-gray-700">© 2025 Warehouse Aggregation Platform</p>
       </footer>
     </div>

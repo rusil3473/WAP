@@ -1,19 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";
+import Link from "next/link"
+import { useState } from "react";
 
 export default function EditWarehousePage() {
-  const params = useParams();
-
   const [formData, setFormData] = useState({
     name: "",
     address: "",
     capacity: "",
-    pricePerDay: "",
+    
     pricePerMonth: "",
     facilities: "",
     startDate: null as Date | null,
@@ -21,36 +15,7 @@ export default function EditWarehousePage() {
     photos: "",
     status: "available",
   });
-
-  const router = useRouter();
-
-  const fetchWarehouse = async () => {
-    try {
-      const res = await axios.post(`/api/users/owner/listings/edit/`,{id:params.id});
-      const data = res.data.data;
-
-      setFormData({
-        name: data.name,
-        address: data.location,
-        capacity: data.capacity,
-        pricePerDay: data.pricePerDay,
-        pricePerMonth: data.pricePerMonth,
-        facilities: data.facilities,
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
-        photos: data.photos,
-        status: data.status,
-      });
-    } catch (error) {
-      console.error("Error fetching warehouse:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchWarehouse();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  const [menuOpen,setMenuOpen]=useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -61,183 +26,178 @@ export default function EditWarehousePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-     
-      await axios.put(`/api/users/owner/listings/edit`,{id:params.id,...formData,startDate: formData.startDate ? format(formData.startDate, "yyyy-MM-dd") : null,endDate: formData.endDate ? format(formData.endDate, "yyyy-MM-dd") : null});
-      router.push("/listings");
-    } catch (error) {
-      console.error("Error updating warehouse:", error);
-    }
+    // Handle form submission logic
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="bg-blue-600 text-white shadow-md">
-        <div className="container mx-auto py-4 px-6">
-          <h1 className="text-2xl font-bold">Edit Warehouse</h1>
+        <div className="container mx-auto py-4 px-6 flex justify-between items-center">
+          <h1 className="text-2xl font-semibold">Edit Warehouse</h1>
+          <nav className="relative bg-blue-600 text-white">
+            {/* Toggle Button for Small Devices */}
+            <button
+              className="block md:hidden text-white text-2xl px-4 py-2"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              ☰
+            </button>
+
+            {/* Navigation Links */}
+            <div
+              className={`absolute left-0 top-full w-auto bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"
+                }`}
+              style={{
+                left: menuOpen ? "0" : "-100%", // Moves the menu to the left when closed
+              }}
+            >
+              <Link
+                href="/search"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Search
+              </Link>
+              <Link
+                href="/listings"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                My Listings
+              </Link>
+              <Link
+                href="/bookings"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Bookings
+              </Link>
+              <Link
+                href="/earnings"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Earnings
+              </Link>
+              <Link
+                href="/support"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Support
+              </Link>
+            </div>
+          </nav>
         </div>
       </header>
 
-      <main className="container mx-auto py-8 px-6">
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+      <main className="flex-grow container mx-auto py-8 px-6">
+        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md hover:scale-105 transition-all">
+          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+            <div className="col-span-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                Warehouse Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-              Address
-            </label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+            <div className="col-span-2">
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                Address
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="capacity" className="block text-sm font-medium text-gray-700">
-              Capacity (sq. ft.)
-            </label>
-            <input
-              type="number"
-              id="capacity"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+            <div>
+              <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-2">
+                Capacity (sq. ft.)
+              </label>
+              <input
+                type="number"
+                id="capacity"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="pricePerDay" className="block text-sm font-medium text-gray-700">
-              Price per Day
-            </label>
-            <input
-              type="number"
-              id="pricePerDay"
-              name="pricePerDay"
-              value={formData.pricePerDay}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+            
+            <div>
+              <label htmlFor="pricePerMonth" className="block text-sm font-medium text-gray-700 mb-2">
+                Price per Month
+              </label>
+              <input
+                type="number"
+                id="pricePerMonth"
+                name="pricePerMonth"
+                value={formData.pricePerMonth}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="pricePerMonth" className="block text-sm font-medium text-gray-700">
-              Price per Month
-            </label>
-            <input
-              type="number"
-              id="pricePerMonth"
-              name="pricePerMonth"
-              value={formData.pricePerMonth}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+            <div>
+              <label htmlFor="facilities" className="block text-sm font-medium text-gray-700 mb-2">
+                Facilities
+              </label>
+              <input
+                type="text"
+                id="facilities"
+                name="facilities"
+                value={formData.facilities}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+              />
+              <small className="text-gray-500 text-xs">Separate with commas</small>
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="facilities" className="block text-sm font-medium text-gray-700">
-              Facilities
-            </label>
-            <input
-              type="text"
-              id="facilities"
-              name="facilities"
-              value={formData.facilities}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
-            <small className="text-gray-500">Separate facilities with commas</small>
-          </div>
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              >
+                <option value="available">Available</option>
+                <option value="booked">Booked</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
-              Start Date
-            </label>
-            <DatePicker
-              selected={formData.startDate}
-              minDate={new Date()}
-              onChange={(date) => setFormData((prev) => ({ ...prev, startDate: date }))}
-              dateFormat="yyyy-MM-dd"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
+            <div className="col-span-2 text-center mt-6">
+              <button
+                type="submit"
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              >
+                Update Warehouse
+              </button>
+            </div>
           </div>
-
-          <div className="mb-4">
-            <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
-              End Date
-            </label>
-            <DatePicker
-              selected={formData.endDate}
-              onChange={(date) => setFormData((prev) => ({ ...prev, endDate: date }))}
-              dateFormat="yyyy-MM-dd"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="photos" className="block text-sm font-medium text-gray-700">
-              Photos (Image URLs)
-            </label>
-            <input
-              type="text"
-              id="photos"
-              name="photos"
-              value={formData.photos}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
-            <small className="text-gray-500">Separate URLs with commas</small>
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            >
-              <option value="available">Available</option>
-              <option value="booked">Booked</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600"
-          >
-            Update Warehouse
-          </button>
         </form>
       </main>
+
+      <footer className="bg-gray-300 text-center py-4">
+        <p className="text-gray-700 text-xs">© 2025 Warehouse Aggregation Platform</p>
+      </footer>
     </div>
   );
 }
