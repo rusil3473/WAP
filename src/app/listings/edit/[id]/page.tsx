@@ -26,7 +26,7 @@ export default function EditWarehousePage() {
 
   const fetchWarehouse = async () => {
     try {
-      const res = await axios.get(`/api/users/owner/listings/edit/${params.id}`);
+      const res = await axios.post(`/api/users/owner/listings/edit/`,{id:params.id});
       const data = res.data.data;
 
       setFormData({
@@ -62,11 +62,8 @@ export default function EditWarehousePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/users/owner/listings/edit/${params.id}`, {
-        ...formData,
-        startDate: formData.startDate ? format(formData.startDate, "yyyy-MM-dd") : null,
-        endDate: formData.endDate ? format(formData.endDate, "yyyy-MM-dd") : null,
-      });
+     
+      await axios.put(`/api/users/owner/listings/edit`,{id:params.id,...formData,startDate: formData.startDate ? format(formData.startDate, "yyyy-MM-dd") : null,endDate: formData.endDate ? format(formData.endDate, "yyyy-MM-dd") : null});
       router.push("/listings");
     } catch (error) {
       console.error("Error updating warehouse:", error);
