@@ -6,13 +6,15 @@ export async function POST(req: NextRequest) {
   try {
     const reqBody = await req.json();
     const { token } = reqBody;
-    
-    const user = jwt.verify(token, process.env.SECRET!);
-    if (typeof user === "string" || !user) {
+    if(!token){
+      return NextResponse.json({ message: "Invalid token", success: false },{ status: 400 });
+    }
+    const userData = jwt.verify(token, process.env.SECRET!);
+    if (typeof userData === "string" || !userData) {
       return NextResponse.json({ message: "Invalid token", success: false },{ status: 400 }
       );
     }
-    const { id } = user;
+    const { id } = userData;
     const data=await getData(id);
     return NextResponse.json({ message: "Got the data", success: true, data }, { status: 200 });
   }

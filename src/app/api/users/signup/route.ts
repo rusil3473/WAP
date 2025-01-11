@@ -7,14 +7,14 @@ connect();
 export async function POST (req : NextRequest ){
   try{
     const reqBody=await req.json();
-    const {email,password,firstName,lastName,username,role} =reqBody;
-    const user=await User.findOne({email}) || await User.findOne({username});
+    const {email,password,fullName,role} =reqBody;
+    const user=await User.findOne({email});
     if(user){
-      return NextResponse.json({message:"Email alerady in use or try another username "},{status:400})
+      return NextResponse.json({message:"Email alerady in use "},{status:400})
     }
     const secPass=await bcrypt.hash(password,await bcrypt.genSalt(10));
     const savedUser=await User.create({
-      username,password:secPass,email,firstName,lastName,role
+      fullName,password:secPass,email,role
     })
     await sendMail({_id:savedUser._id,email,requestType:"VERIFY"});
     return NextResponse.json({Message:"User Created Succefully ",success:true},{status:201})

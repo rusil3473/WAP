@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 
 export default function BookNowPage() {
@@ -27,7 +28,9 @@ export default function BookNowPage() {
         startDate: data.startDate,
         endDate: data.endDate
       })
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(error.message)
       console.log(error)
     }
   }
@@ -39,7 +42,9 @@ export default function BookNowPage() {
       setWarehousData((pre)=>{
         return {...pre,customerId:data._id}
       })
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(error.response.data.message)
       console.log(error)
     }
   } 
@@ -103,7 +108,9 @@ export default function BookNowPage() {
       })
       router.push("/dashboard/user")
       
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(error.message)
       console.log(error)
     }
 

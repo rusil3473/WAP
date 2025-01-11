@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function NewWarehousePage() {
   const [formData, setFormData] = useState({
@@ -41,9 +42,11 @@ export default function NewWarehousePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("/api/users/owner/listings/new", formData);
+      await axios.post("/api/users/newlisting", formData);
       router.push("/listings");
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(error.message)
       console.log(error);
     }
   };

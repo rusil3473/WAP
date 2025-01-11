@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [user, setUser] = useState({ email: "", password: "" });
@@ -13,11 +14,14 @@ export default function Login() {
     try {
       if (user.email && user.password) {
         await axios.post("/api/users/login", user);
+        toast.success("Login Success")
         router.push("/");
       } else {
         alert("Please fill in both fields.");
       }
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(error.response.data.message);
       console.log(error);
     }
   };

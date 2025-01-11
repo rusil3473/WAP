@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     await Warehouse.create({
-      name, owner, location: address, capacity, pricePerDay, pricePerMonth, facilities, startDate, endDate, photos, status
+      name, owner, address, capacity, pricePerDay, pricePerMonth, facilities, startDate, endDate, photos, status
     });
 
     return NextResponse.json({ message: "Success " }, { status: 201 })

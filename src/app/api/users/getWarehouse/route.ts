@@ -11,15 +11,11 @@ export async function POST(req:NextRequest){
     const {token}=reqBody; // this is for owner to get all warehouses
     const {_id}=reqBody; //this is for user to find data of single warehouse with id _id
 
-    // Below is for user to serch the the warehouse from list of all warehouses 
-    if(!token && !_id){
-      const allWarehouses=await Warehouse.find({status:"available"});
-      return NextResponse.json({message:"All warehouses with status active are sent ",Warehouse:allWarehouses},{status:200})
-    }
     if(_id){
       const warehouseData=await Warehouse.findById(_id);
       return NextResponse.json({message:"ware house with id _id is sent  ",Warehouse:warehouseData},{status:200})
     }
+    
     const info=jwt.verify(token,process.env.SECRET!)
     if(typeof info ==="string" || !info){
       return NextResponse.json({message:"invalid Token "},{status:200})
@@ -36,4 +32,15 @@ export async function POST(req:NextRequest){
   }
 
 
+}
+
+export async function GET(){
+  try {
+    const allWarehouses=await Warehouse.find({status:"available"});
+    return NextResponse.json({message:"All warehouses with status active are sent ",Warehouse:allWarehouses},{status:200})
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error:any) {
+    return NextResponse.json({message:error.message},{status:500})
+  }
 }

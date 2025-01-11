@@ -1,10 +1,10 @@
 "use client";
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 export default function Home() {
- 
+
   const router = useRouter();
   const getUserInfo = async (token: string) => {
     try {
@@ -26,11 +26,11 @@ export default function Home() {
 
   useEffect(() => {
     const t = document.cookie.split("=")[1]
-    if(t){
+    if (t) {
       getUserInfo(t);
     }
-   
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -41,16 +41,23 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-blue-700">Warehouse Platform</h1>
           <div className="flex gap-3">
             <Link
-              href="/login"
+              href="/owner/login"
               className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
             >
               Login
             </Link>
+
             <Link
-              href="/signup"
+              href="/signup/owner"
               className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
             >
-              Signup
+              Signup or Owner
+            </Link>
+            <Link
+              href="/signup/user"
+              className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+            >
+              Signup or User
             </Link>
             <Link
               href="/search"

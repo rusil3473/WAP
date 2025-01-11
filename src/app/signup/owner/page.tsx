@@ -1,33 +1,37 @@
 "use client";
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Signup() {
   const [user, setUser] = useState({
-    username: "",
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "",
+    role:"owner"
   });
   const [err, setErr] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (user.username && user.email && user.password) {
+    if (user.fullName && user.email && user.password) {
+      if(err){
+        return toast.error("Password & Confirm Password does not match");
+      }
       try {
         await axios.post("/api/users/signup", user);
+        toast.success("Sigup Successful")
         router.push("/login");
-      } catch (error) {
-        console.log(error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+        toast.error(error.response.data.message)
       }
     } else {
-      alert("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
     }
   };
 
@@ -45,64 +49,18 @@ export default function Signup() {
         <h1 className="text-3xl font-bold text-blue-700 text-center mb-6">Create Your Account</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="firstName" className="block text-gray-700 font-medium mb-2">
-              First Name
+            <label htmlFor="fullName" className="block text-gray-700 font-medium mb-2">
+              Full Name
             </label>
             <input
               type="text"
-              id="firstName"
+              id="fullName"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your first name"
-              value={user.firstName}
-              onChange={(e) => setUser({ ...user, firstName: e.currentTarget.value })}
+              placeholder="Enter your Full Name"
+              value={user.fullName}
+              onChange={(e) => setUser({ ...user, fullName: e.currentTarget.value })}
               required
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="lastName" className="block text-gray-700 font-medium mb-2">
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your last name"
-              value={user.lastName}
-              onChange={(e) => setUser({ ...user, lastName: e.currentTarget.value })}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your username"
-              value={user.username}
-              onChange={(e) => setUser({ ...user, username: e.currentTarget.value })}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="role" className="block text-gray-700 font-medium mb-2">
-              Role
-            </label>
-            <select
-              id="role"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={user.role}
-              onChange={(e) => setUser({ ...user, role: e.currentTarget.value })}
-              required
-            >
-              <option value="" disabled>
-                Select your role
-              </option>
-              <option value="owner">Owner</option>
-              <option value="customer">Customer</option>
-            </select>
           </div>
 
           <div className="mb-4">

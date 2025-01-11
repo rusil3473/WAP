@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function WarehouseDetailsPage() {
   const [warehouse, setWarehouse] = useState({
     _id: "",
     name: "",
-    location: "",
+    address: "",
     capacity: "",
   
     pricePerMonth: "",
@@ -25,6 +26,7 @@ export default function WarehouseDetailsPage() {
       const res = await axios.post("/api/users/getWarehouse", { _id });
       setWarehouse(res.data.Warehouse);
     } catch (error) {
+      toast.error("Error fetching warehouse details:")
       console.error("Error fetching warehouse details:", error);
     }
   };
@@ -69,7 +71,7 @@ export default function WarehouseDetailsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-4">
               <p className="text-sm text-gray-700">
-                <strong>Location:</strong> {warehouse.location}
+                <strong>address:</strong> {warehouse.address}
               </p>
               <p className="text-sm text-gray-700">
                 <strong>Capacity:</strong> {warehouse.capacity} sq. ft.

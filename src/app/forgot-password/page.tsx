@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -14,11 +15,20 @@ export default function ForgotPassword() {
     e.preventDefault();
 
     if (email) {
-      await axios.post("/api/users/forgot-password", { email });
-      setSuccess(true);
-      setErr(false);
-      setEmail("");
-      setTimeout(() => router.push("/login"), 2000); // Redirect to login after success
+      try {
+        await axios.post("/api/users/forgot-password", { email });
+        toast.success("Email Sent successfully")
+        setSuccess(true);
+        setErr(false);
+        setEmail("");
+        setTimeout(() => router.push("/login"), 2000);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
+       
+        toast.error(error.response.data.message)
+        console.log(error)
+      }
+    
     } else {
       setErr(true);
     }

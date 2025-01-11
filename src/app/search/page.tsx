@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import toast from "react-hot-toast";
 
 type warehouseObject = {
   _id: string;
@@ -13,7 +14,7 @@ type warehouseObject = {
  
   capacity: string;
   status: string;
-  location: string;
+  address: string;
   startDate: string;
   endDate: string;
 };
@@ -21,7 +22,7 @@ type warehouseObject = {
 export default function Search() {
   const router = useRouter();
   const [warehouses, setWarehouses] = useState([
-    { _id: "", location: "", name: "", capacity: "", pricePerMonth: "", status: "",  startDate: "", endDate: "" },
+    { _id: "", address: "", name: "", capacity: "", pricePerMonth: "", status: "",  startDate: "", endDate: "" },
   ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterVisible, setFilterVisible] = useState(false);
@@ -51,15 +52,16 @@ export default function Search() {
 
   const getWarehouse = async () => {
     try {
-      const res = await axios.post("/api/users/getWarehouse", {});
+      const res = await axios.get("/api/users/getWarehouse");
       setWarehouses(() => {
         const data = res.data.Warehouse.map((obj: warehouseObject) => {
-          const { _id, location, name, capacity, pricePerMonth, status, startDate, endDate } = obj;
-          return { _id, location, name, capacity, pricePerMonth, status, startDate, endDate };
+          const { _id, address, name, capacity, pricePerMonth, status, startDate, endDate } = obj;
+          return { _id, address, name, capacity, pricePerMonth, status, startDate, endDate };
         });
         return data;
       });
     } catch (error) {
+      toast.error("Error fetching warehouse details:")
       console.log(error);
     }
   };
@@ -177,7 +179,7 @@ export default function Search() {
                 onClick={() => handleWarehouse(warehouse._id)}
               >
                 <h2 className="text-xl font-bold text-blue-700">{warehouse.name}</h2>
-                <p className="text-gray-600">Location: {warehouse.location}</p>
+                <p className="text-gray-600">address: {warehouse.address}</p>
                 <p className="text-gray-600">Price: ₹{warehouse.pricePerMonth}/month</p>
               </div>
             ))

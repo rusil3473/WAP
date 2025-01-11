@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
+import toast from "react-hot-toast";
+
 
 type warehouseObject = {
   _id: string;
@@ -11,7 +13,6 @@ type warehouseObject = {
   status: string;
   location: string;
 };
-
 
 
 export default function ListingsPage() {
@@ -31,7 +32,9 @@ export default function ListingsPage() {
         });
         return data;
       });
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      toast.error(error.response.data.message)
       console.log(error);
     }
   };
@@ -40,12 +43,12 @@ export default function ListingsPage() {
     const confirmed = window.confirm("Are you sure you want to delete this warehouse?");
     if (confirmed) {
       try {
-        await axios.post("/api/users/owner/listings/delete", { _id });
+        await axios.post("/api/users/deletelisting", { _id });
         setWarehouses((prev) => prev.filter((warehouse) => warehouse._id !== _id));
         alert("Warehouse deleted successfully.");
       } catch (error) {
         console.log(error);
-        alert("Error while deleting the warehouse.");
+        toast.error("Error while deleting the warehouse.");
       }
     }
   };

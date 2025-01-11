@@ -1,13 +1,16 @@
 "use client";
+import axios from "axios";
 import Link from "next/link"
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function EditWarehousePage() {
   const [formData, setFormData] = useState({
+    _id:"",
     name: "",
     address: "",
     capacity: "",
-    
     pricePerMonth: "",
     facilities: "",
     startDate: null as Date | null,
@@ -15,7 +18,7 @@ export default function EditWarehousePage() {
     photos: "",
     status: "available",
   });
-  const [menuOpen,setMenuOpen]=useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -23,12 +26,38 @@ export default function EditWarehousePage() {
       [name]: value,
     }));
   };
+  const param = useParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic
+    try {
+      await axios.put("/api/users/editlisting",formData)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.respnse.data.message)
+      
+    }
   };
 
+  const getWarehouseData = async () => {
+    try {
+      const warehouse=await axios.post("/api/users/getWarehouse", { _id: param.id })
+      const warehouseData=warehouse.data.Warehouse;
+      const {_id,name,address,capacity,pricePerMonth,facilities,startDate,endDate,photos,status}=warehouseData;
+      setFormData({_id,name,address,capacity,pricePerMonth,facilities,startDate,endDate,photos,status})
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.response.data.message)
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+
+    getWarehouseData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="bg-blue-600 text-white shadow-md">
@@ -134,7 +163,7 @@ export default function EditWarehousePage() {
               />
             </div>
 
-            
+
             <div>
               <label htmlFor="pricePerMonth" className="block text-sm font-medium text-gray-700 mb-2">
                 Price per Month

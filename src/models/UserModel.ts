@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 const userSchema = new mongoose.Schema({
-  username: {
+  fullName: {
     type: String,
     required: true,
     unique: true
@@ -12,20 +12,12 @@ const userSchema = new mongoose.Schema({
   role:{
     type:String,
     required:true
-  }
-  ,
+  },
   password: {
     type: String,
     required: true
   },
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String,
-    required: true
-  },
+  
   isVerified:{
     type:Boolean,
     required:true,

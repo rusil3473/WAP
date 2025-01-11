@@ -29,38 +29,16 @@ export default function CustomerDashboard() {
 
             {/* Navigation Links */}
             <div
-              className={`absolute left-0 top-full w-full bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"}`}
-            >
-              <Link
-                href="/search"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Search
-              </Link>
-              <Link
-                href="/bookings"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Bookings
-              </Link>
-              <Link
-                href="/payments"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Payments
-              </Link>
-              <Link
-                href="/support"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Support
-              </Link>
-              <Link
-                href="/profile"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Profile
-              </Link>
+              className={`absolute top-full w-auto bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"
+                }`}>
+              
+              <div className="flex flex-col">
+                <Link href="/serach">Search</Link>
+                <Link href="/serach">Booking</Link>
+                <Link href="/serach">Payments</Link>
+                <Link href="/serach">Support</Link>
+
+              </div>
             </div>
           </nav>
         </div>
@@ -133,3 +111,35 @@ export default function CustomerDashboard() {
     </div>
   );
 }
+
+/* 
+<Link
+                href="/search"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Search
+              </Link>
+              <Link
+                href="/bookings"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Bookings
+              </Link>
+              <Link
+                href="/payments"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Payments
+              </Link>
+              <Link
+                href="/support"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Support
+              </Link>
+              <Link
+                href="/profile"
+                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              >
+                Profile
+              </Link> */

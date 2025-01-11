@@ -11,7 +11,7 @@ const warehouseSchema = new mongoose.Schema(
       ref: "User", // Reference to the User model
       required: true,
     },
-    location: {
+    address: {
       type:String,
       required:true
     },

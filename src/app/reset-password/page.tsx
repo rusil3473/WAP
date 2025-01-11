@@ -2,28 +2,39 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ResetPassword() {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [token, setToken] = useState("");
-
+  const [err, setErr] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
+
     e.preventDefault();
     try {
       await axios.post("/api/users/reset-password", { token, password });
+      toast.success("Password Reset Successful")
       router.push("/login");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      toast.error(error.response.data.message)
       console.log(error);
     }
   };
+  useEffect(() => {
+    if (confirmPassword !== password) {
+      setErr(true);
+    } else {
+      setErr(false);
+    }
+  }, [confirmPassword, password]);
+
 
   useEffect(() => {
     const t = window.location.search.split("=")[1];
-    console.log(t);
     setToken(t);
   }, []);
 
@@ -65,6 +76,7 @@ export default function ResetPassword() {
               required
             />
           </div>
+          {err ? <p className="text-red-600">Password does not match</p> : ""}
           <button
             type="submit"
             className="w-full px-6 py-3 bg-blue-500 text-white font-medium text-lg rounded-lg shadow-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition duration-300"

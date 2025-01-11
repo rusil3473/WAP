@@ -13,11 +13,11 @@ export async function POST(req:NextRequest){
     const user=await User.findOne({email})
    
     if(!user){
-      return NextResponse.json({messgage:"No such user"},{status:400})
+      return NextResponse.json({message:"No such user"},{status:400})
     }
     const isCorrect=await bcrypt.compare(password,user.password);
     if(!isCorrect){
-      return NextResponse.json({messgage:"Password Does not match"},{status:400})
+      return NextResponse.json({message:"Password Does not match"},{status:400})
     }
     console.log(isCorrect)
     const data={
