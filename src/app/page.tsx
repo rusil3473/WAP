@@ -41,7 +41,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-blue-700">Warehouse Platform</h1>
           <div className="flex gap-3">
             <Link
-              href="/owner/login"
+              href="/login"
               className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
             >
               Login
@@ -51,13 +51,13 @@ export default function Home() {
               href="/signup/owner"
               className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
             >
-              Signup or Owner
+              Signup For Owner
             </Link>
             <Link
               href="/signup/user"
               className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
             >
-              Signup or User
+              Signup For User
             </Link>
             <Link
               href="/search"
