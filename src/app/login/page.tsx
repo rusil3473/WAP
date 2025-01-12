@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { signIn } from "next-auth/react";
+import { signIn,useSession } from "next-auth/react";
+
 
 export default function Login() {
   const [user, setUser] = useState({ email: "", password: "" });
   const router = useRouter();
+  const {data:session}=useSession();
   
   
 
@@ -28,6 +30,10 @@ export default function Login() {
       console.log(error);
     }
   };
+  
+  if(session){
+		router.push("/");
+  }
  
 
   return (
