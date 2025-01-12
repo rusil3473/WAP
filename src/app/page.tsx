@@ -54,7 +54,7 @@ export default function Home() {
               Signup For Owner
             </Link>
             <Link
-              href="/signup/user"
+              href="/signup/customer"
               className="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
             >
               Signup For User
