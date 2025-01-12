@@ -77,7 +77,7 @@ export default function Search() {
           <h1 className="text-3xl font-bold">Search Warehouses</h1>
           <nav className="space-x-6">
             <button
-              onClick={() => router.push("/dashboard/user")}
+              onClick={() => router.push("/dashboard/customer")}
               className="px-4 py-2  text-white rounded-lg hover:bg-blue-600"
             >
               Dashboard

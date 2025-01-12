@@ -3,15 +3,16 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from "react-hot-toast"
 import { useSession, signIn, signOut } from "next-auth/react";
+
 export default function Signup() {
   const [user, setUser] = useState({
     fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "owner"
+    role: "customer",
   });
   const [err, setErr] = useState(false);
   const router = useRouter();
@@ -20,22 +21,19 @@ export default function Signup() {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (user.fullName && user.email && user.password) {
-      if (err) {
-        return toast.error("Password & Confirm Password does not match");
-      }
       try {
-        await axios.post("/api/users/signup", user)
+        await axios.post("/api/users/signup", user);
         toast.success("Sigup Successful")
         router.push("/login");
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error:any) {
         toast.error(error.response.data.message)
         if(error.response.data.message==="Email alerady in use "){
           await signOut()
         }
       }
     } else {
-      toast.error("Please fill in all fields.");
+      alert("Please fill in all fields.");
     }
   };
 
@@ -45,13 +43,11 @@ export default function Signup() {
     } else {
       setErr(false);
     }
-
     if(session){
       setUser({...user,fullName:session.user?.name || "",email:session.user?.email||""})
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.confirmPassword, user.password,session]);
-
 
   if (!session) {
     return (
@@ -190,6 +186,4 @@ export default function Signup() {
     </div>
 
   );
-
-
 }

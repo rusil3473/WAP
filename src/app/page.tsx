@@ -11,7 +11,7 @@ export default function Home() {
       const res = await axios.post("api/users/getUserInfo", { token })
       const data = res.data.data;
       if (data.role === "customer") {
-        router.push("/dashboard/user")
+        router.push("/dashboard/customer")
       }
       else if (data.role === "admin") {
         router.push("/admin")

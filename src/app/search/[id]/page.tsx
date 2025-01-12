@@ -50,7 +50,7 @@ export default function WarehouseDetailsPage() {
               Search
             </button>
             <button
-              onClick={() => router.push("/dashboard/user")}
+              onClick={() => router.push("/dashboard/customer")}
               className="text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Dashboard

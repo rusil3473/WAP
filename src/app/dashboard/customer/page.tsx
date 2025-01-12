@@ -33,10 +33,10 @@ export default function CustomerDashboard() {
                 }`}>
               
               <div className="flex flex-col">
-                <Link href="/serach">Search</Link>
-                <Link href="/serach">Booking</Link>
-                <Link href="/serach">Payments</Link>
-                <Link href="/serach">Support</Link>
+                <Link href="/search">Search</Link>
+                <Link href="/Search">Booking</Link>
+                <Link href="/Search">Payments</Link>
+                <Link href="/Search">Support</Link>
 
               </div>
             </div>

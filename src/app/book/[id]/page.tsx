@@ -106,7 +106,7 @@ export default function BookNowPage() {
         totalAmount:formData.totalPrice,
         storageDetails:formData.storageDetails
       })
-      router.push("/dashboard/user")
+      router.push("/dashboard/customer")
       
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:any) {
@@ -125,7 +125,7 @@ export default function BookNowPage() {
           <h1 className="text-2xl font-bold">Book Warehouse</h1>
           <nav className="space-x-4">
             <button
-              onClick={() => router.push("/dashboard/user")}
+              onClick={() => router.push("/dashboard/customer")}
               className="px-4 py-2  text-white rounded-lg hover:bg-blue-700"
             >
               Dashboard
