@@ -6,9 +6,7 @@ import axios from "axios";
 
 export default function Signup() {
   const [user, setUser] = useState({
-    username: "",
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -19,7 +17,7 @@ export default function Signup() {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (user.username && user.email && user.password) {
+    if (user.fullName && user.email && user.password) {
       try {
         await axios.post("/api/users/signup", user);
         router.push("/login");
@@ -44,45 +42,20 @@ export default function Signup() {
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300">
         <h1 className="text-3xl font-bold text-blue-700 text-center mb-6">Create Your Account</h1>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="firstName" className="block text-gray-700 font-medium mb-2">
-              First Name
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your first name"
-              value={user.firstName}
-              onChange={(e) => setUser({ ...user, firstName: e.currentTarget.value })}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="lastName" className="block text-gray-700 font-medium mb-2">
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your last name"
-              value={user.lastName}
-              onChange={(e) => setUser({ ...user, lastName: e.currentTarget.value })}
-              required
-            />
-          </div>
+          
+          
+        
           <div className="mb-4">
             <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
-              Username
+              Full Name
             </label>
             <input
               type="text"
               id="username"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               placeholder="Enter your username"
-              value={user.username}
-              onChange={(e) => setUser({ ...user, username: e.currentTarget.value })}
+              value={user.fullName}
+              onChange={(e) => setUser({ ...user, fullName: e.currentTarget.value })}
               required
             />
           </div>
@@ -92,7 +65,7 @@ export default function Signup() {
             </label>
             <select
               id="role"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               value={user.role}
               onChange={(e) => setUser({ ...user, role: e.currentTarget.value })}
               required
@@ -112,7 +85,7 @@ export default function Signup() {
             <input
               type="email"
               id="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               placeholder="Enter your email"
               value={user.email}
               onChange={(e) => setUser({ ...user, email: e.currentTarget.value })}
@@ -126,7 +99,7 @@ export default function Signup() {
             <input
               type="password"
               id="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               placeholder="Enter your password"
               value={user.password}
               onChange={(e) => setUser({ ...user, password: e.currentTarget.value })}
@@ -140,7 +113,7 @@ export default function Signup() {
             <input
               type="password"
               id="confirmPassword"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               placeholder="Confirm your password"
               value={user.confirmPassword}
               onChange={(e) => setUser({ ...user, confirmPassword: e.currentTarget.value })}

@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const reqBody = await req.json();
     const { token } = reqBody;
+    
     if(!token){
       return NextResponse.json({ message: "Invalid token", success: false },{ status: 400 });
     }
