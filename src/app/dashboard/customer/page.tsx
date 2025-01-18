@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function CustomerDashboard() {
@@ -11,37 +12,76 @@ export default function CustomerDashboard() {
     totalPayments: 0,
   };
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const router=useRouter();
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Navigation Bar */}
-      <header className="bg-blue-600 text-white shadow-md">
-        <div className="container mx-auto py-4 px-6 flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Warehouse Aggregation</h1>
-          <nav className="relative bg-blue-600 text-white">
-            {/* Toggle Button for Small Devices */}
-            <button
-              className="block md:hidden text-white text-2xl px-4 py-2"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              ☰
-            </button>
-
-            {/* Navigation Links */}
-            <div
-              className={`absolute top-full w-auto bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"
-                }`}>
-              
-              <div className="flex flex-col">
-                <Link href="/search">Search</Link>
-                <Link href="/Search">Booking</Link>
-                <Link href="/Search">Payments</Link>
-                <Link href="/Search">Support</Link>
-
-              </div>
+      <header className="sticky top-0 bg-white shadow-md z-50">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
+            Warehouse Aggregation
+            </h1>
+            <div className="md:hidden">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
+                aria-expanded={menuOpen}
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {menuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
             </div>
-          </nav>
-        </div>
+            <div
+              className={`md:flex md:items-center md:space-x-4 ${
+                menuOpen ? "block" : "hidden"
+              } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
+            >
+              <button
+                onClick={() => router.push("/search")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Search
+              </button>
+              <button
+                onClick={() => router.push("//bookings")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Booking
+              </button>
+
+              <button
+                onClick={() => router.push("/payments")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Payments
+              </button>
+              <button
+                onClick={() => router.push("/support")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Support
+              </button>
+              <button
+                onClick={() => router.push("/profile")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Profile
+              </button>
+            </div>
+          </div>
+        </nav>
       </header>
 
       {/* Dashboard Content */}

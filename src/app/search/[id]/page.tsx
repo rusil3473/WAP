@@ -11,13 +11,14 @@ export default function WarehouseDetailsPage() {
     name: "",
     address: "",
     capacity: "",
-  
     pricePerMonth: "",
     facilities: "",
     status: "",
+    startDate: "",
+    endDate: "",
     photos: [],
   });
-
+  const [menuOpen,setMenuOpen]=useState(false);
   const params = useParams();
   const router = useRouter();
 
@@ -26,9 +27,18 @@ export default function WarehouseDetailsPage() {
       const res = await axios.post("/api/users/getWarehouse", { _id });
       setWarehouse(res.data.Warehouse);
     } catch (error) {
-      toast.error("Error fetching warehouse details:")
+      toast.error("Error fetching warehouse details:");
       console.error("Error fetching warehouse details:", error);
     }
+  };
+
+  const formatDate = (date: string) => {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
   useEffect(() => {
@@ -38,45 +48,86 @@ export default function WarehouseDetailsPage() {
   }, [params.id]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-50 via-white to-blue-50">
-      <header className="bg-blue-600 text-white shadow-lg">
-        <div className="container mx-auto flex justify-between items-center py-4 px-6">
-          <h1 className="text-3xl font-semibold">{warehouse.name}</h1>
-          <div className="flex gap-4">
-            <button
-              onClick={() => router.push("/search")}
-              className="text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 via-white to-blue-50 text-blue-700">
+      <header className="sticky top-0 bg-white shadow-md z-50">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
+            Warehouse Aggregation
+            </h1>
+            <div className="md:hidden">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
+                aria-expanded={menuOpen}
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {menuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
+            <div
+              className={`md:flex md:items-center md:space-x-4 ${
+                menuOpen ? "block" : "hidden"
+              } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
             >
-              Search
-            </button>
-            <button
-              onClick={() => router.push("/dashboard/customer")}
-              className="text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => router.push("/profile")}
-              className="text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
-            >
-              Profile
-            </button>
+              <button
+                onClick={() => router.push("/search")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Search
+              </button>
+              <button
+                onClick={() => router.push("//bookings")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Booking
+              </button>
+
+              <button
+                onClick={() => router.push("/payments")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Payments
+              </button>
+              <button
+                onClick={() => router.push("/support")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Support
+              </button>
+              <button
+                onClick={() => router.push("/profile")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Profile
+              </button>
+            </div>
           </div>
-        </div>
+        </nav>
       </header>
 
       <main className="container mx-auto py-8 px-6">
         <div className="bg-white rounded-lg shadow-xl p-8">
-          <h2 className="text-2xl font-semibold mb-6">Warehouse Details</h2>
+          <h2 className="text-2xl text-black font-semibold mb-6">Warehouse Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-4">
               <p className="text-sm text-gray-700">
-                <strong>address:</strong> {warehouse.address}
+                <strong>Address:</strong> {warehouse.address}
               </p>
               <p className="text-sm text-gray-700">
                 <strong>Capacity:</strong> {warehouse.capacity} sq. ft.
               </p>
-              
               <p className="text-sm text-gray-700">
                 <strong>Price per Month:</strong> ₹{warehouse.pricePerMonth}
               </p>
@@ -86,10 +137,15 @@ export default function WarehouseDetailsPage() {
               <p className={`text-sm ${warehouse.status === "available" ? "text-green-600" : "text-red-600"}`}>
                 <strong>Status:</strong> {warehouse.status}
               </p>
+              <p className="text-sm text-gray-700">
+                <strong>Start Date:</strong> {formatDate(warehouse.startDate)}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>End Date:</strong> {formatDate(warehouse.endDate)}
+              </p>
             </div>
 
             <div className="flex flex-col gap-4">
-              {/* Add Image Section */}
               {/*warehouse.photos.length > 0 ? (
                 <img
                   src={warehouse.photos[0]}
@@ -102,7 +158,6 @@ export default function WarehouseDetailsPage() {
                 </div>
               )*/}
 
-              {/* Action Buttons */}
               <button
                 onClick={() => router.push(`/book/${warehouse._id}`)}
                 className="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200"

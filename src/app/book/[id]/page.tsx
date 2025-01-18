@@ -9,10 +9,10 @@ import toast from "react-hot-toast";
 
 export default function BookNowPage() {
 
-
+  const [menuOpen,setMenuOpen]=useState(false);
   const [wareHouseData, setWarehousData] = useState({
-    customerId:"",
-    ownerId:"",
+    customerId: "",
+    ownerId: "",
     pricePerMonth: "",
     startDate: new Date(),
     endDate: new Date()
@@ -22,37 +22,38 @@ export default function BookNowPage() {
     try {
       const res = await axios.post("/api/users/getWarehouse", { _id: param.id })
       const data = res.data.Warehouse;
-      setWarehousData({...wareHouseData,
-        ownerId:data.owner,
+      setWarehousData({
+        ...wareHouseData,
+        ownerId: data.owner,
         pricePerMonth: data.pricePerMonth,
         startDate: data.startDate,
         endDate: data.endDate
       })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast.error(error.message)
       console.log(error)
     }
   }
-   const getUserInfo=async(token:string)=>{
+  const getUserInfo = async (token: string) => {
     try {
-     
-      const res=await axios.post("/api/users/getUserInfo",{token});
-      const data=res.data.data;
-      setWarehousData((pre)=>{
-        return {...pre,customerId:data._id}
+
+      const res = await axios.post("/api/users/getUserInfo", { token });
+      const data = res.data.data;
+      setWarehousData((pre) => {
+        return { ...pre, customerId: data._id }
       })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast.error(error.response.data.message)
       console.log(error)
     }
-  } 
+  }
   useEffect(() => {
-    const token =document.cookie.split("=")[1]
-    
+    const token = document.cookie.split("=")[1]
+
     getWarehouseData();
-     getUserInfo(token); 
+    getUserInfo(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const [formData, setFormData] = useState({
@@ -71,7 +72,7 @@ export default function BookNowPage() {
 
   const calculateTotalPrice = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
-      const totalAmount =(endDate.getMonth()-startDate.getMonth())*Number(wareHouseData.pricePerMonth);
+      const totalAmount = (endDate.getMonth() - startDate.getMonth()) * Number(wareHouseData.pricePerMonth);
       return totalAmount
     }
     return 0;
@@ -96,64 +97,92 @@ export default function BookNowPage() {
     e.preventDefault();
 
     try {
-      await axios.post("/api/users/newBooking",{
-        customerId:wareHouseData.customerId,
-        ownerId:wareHouseData.ownerId,
-        warehouseId:param.id,
-        bookingDate:new Date(),
-        startDate:formData.startDate,
-        endDate:formData.endDate,
-        totalAmount:formData.totalPrice,
-        storageDetails:formData.storageDetails
+      await axios.post("/api/users/newBooking", {
+        customerId: wareHouseData.customerId,
+        ownerId: wareHouseData.ownerId,
+        warehouseId: param.id,
+        bookingDate: new Date(),
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        totalAmount: formData.totalPrice,
+        storageDetails: formData.storageDetails
       })
       router.push("/dashboard/customer")
-      
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast.error(error.message)
       console.log(error)
     }
 
   };
- 
+
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <header className="bg-blue-600 text-white py-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center px-4">
-          <h1 className="text-2xl font-bold">Book Warehouse</h1>
-          <nav className="space-x-4">
-            <button
-              onClick={() => router.push("/dashboard/customer")}
-              className="px-4 py-2  text-white rounded-lg hover:bg-blue-700"
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
+      <header className="sticky top-0 bg-white shadow-md z-50">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
+              Book Warehouse
+            </h1>
+            <div className="md:hidden">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
+                aria-expanded={menuOpen}
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {menuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
+            <div
+              className={`md:flex md:items-center md:space-x-4 ${
+                menuOpen ? "block" : "hidden"
+              } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
             >
-              Dashboard
-            </button>
-            <button
-              onClick={() => router.push("/search")}
-              className="px-4 py-2  text-white rounded-lg hover:bg-blue-700"
-            >
-              Search
-            </button>
-            <button
-              onClick={() => router.push("/profile")}
-              className="px-4 py-2  text-white rounded-lg hover:bg-blue-700"
-            >
-              Profile
-            </button>
-          </nav>
-        </div>
+              <button
+                onClick={() => router.push("/dashboard/customer")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => router.push("/search")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Search
+              </button>
+              <button
+                onClick={() => router.push("/profile")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Profile
+              </button>
+            </div>
+          </div>
+        </nav>
       </header>
-
-      {/* Main Content */}
-      <main className="flex-grow container mx-auto py-8 px-4 md:px-6">
+  
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <form
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto"
         >
-          <h2 className="text-xl font-bold mb-6">Booking Form</h2>
-          {/* User Name */}
+          <h2 className="text-2xl sm:text-3xl font-bold text-blue-700 mb-6 text-center">
+            Booking Form
+          </h2>
           <div className="mb-4">
             <label htmlFor="userName" className="block text-sm font-medium text-gray-700">
               Name
@@ -164,12 +193,11 @@ export default function BookNowPage() {
               name="userName"
               value={formData.userName}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-
-          {/* Contact Info */}
+  
           <div className="mb-4">
             <label htmlFor="contactInfo" className="block text-sm font-medium text-gray-700">
               Contact Information
@@ -180,12 +208,11 @@ export default function BookNowPage() {
               name="contactInfo"
               value={formData.contactInfo}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-
-          {/* Start Date */}
+  
           <div className="mb-4">
             <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
               Start Date
@@ -196,12 +223,11 @@ export default function BookNowPage() {
               minDate={warehouseStartDate}
               maxDate={warehouseEndDate}
               dateFormat="yyyy-MM-dd"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholderText="Select start date"
             />
           </div>
-
-          {/* End Date */}
+  
           <div className="mb-4">
             <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
               End Date
@@ -212,20 +238,16 @@ export default function BookNowPage() {
               minDate={formData.startDate || warehouseStartDate}
               maxDate={warehouseEndDate}
               dateFormat="yyyy-MM-dd"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholderText="Select end date"
             />
           </div>
-
-          {/* Total Price */}
+  
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Total Price</label>
             <p className="text-lg font-bold text-blue-700">₹{formData.totalPrice}</p>
           </div>
-
-
-
-          {/* Storage Details */}
+  
           <div className="mb-4">
             <label htmlFor="storageDetails" className="block text-sm font-medium text-gray-700">
               What will be stored?
@@ -235,26 +257,27 @@ export default function BookNowPage() {
               name="storageDetails"
               value={formData.storageDetails}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="Provide details about the items to be stored..."
               required
             />
           </div>
-
-          {/* Submit Button */}
+  
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 font-medium"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium shadow-lg transition"
           >
             Confirm Booking
           </button>
         </form>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-300 text-center py-4">
-        <p className="text-gray-700">© 2025 Warehouse Aggregation Platform</p>
+  
+      <footer className="bg-blue-600 text-white text-center py-4 mt-auto">
+        <p>© 2025 Warehouse Aggregation Platform</p>
       </footer>
     </div>
   );
+  
+
+
 }

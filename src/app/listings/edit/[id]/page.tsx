@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import Link from "next/link"
-import { useParams } from "next/navigation";
+import { useParams,useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -19,6 +19,7 @@ export default function EditWarehousePage() {
     status: "available",
   });
   const [menuOpen, setMenuOpen] = useState(false);
+  const router=useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -115,6 +116,61 @@ export default function EditWarehousePage() {
         </div>
       </header>
 
+
+      <header className="sticky top-0 bg-white shadow-md z-50">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
+              Book Warehouse
+            </h1>
+            <div className="md:hidden">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
+                aria-expanded={menuOpen}
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {menuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
+            <div
+              className={`md:flex md:items-center md:space-x-4 ${
+                menuOpen ? "block" : "hidden"
+              } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
+            >
+              <button
+                onClick={() => router.push("/dashboard/customer")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => router.push("/search")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Search
+              </button>
+              <button
+                onClick={() => router.push("/profile")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Profile
+              </button>
+            </div>
+          </div>
+        </nav>
+      </header>
       <main className="flex-grow container mx-auto py-8 px-6">
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md hover:scale-105 transition-all">
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">

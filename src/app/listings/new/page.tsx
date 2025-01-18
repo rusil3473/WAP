@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import DatePicker from "react-datepicker";
-import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function NewWarehousePage() {
@@ -70,59 +69,77 @@ export default function NewWarehousePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 via-white to-blue-50">
-      <header className="bg-blue-600 text-white shadow-lg">
-        <div className="container mx-auto flex justify-between items-center py-4 px-6">
-          <h1 className="text-3xl font-semibold">Create New Warehouse</h1>
-          <nav className="relative bg-blue-600 text-white">
-            {/* Toggle Button for Small Devices */}
-            <button
-              className="block md:hidden text-white text-2xl px-4 py-2"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              ☰
-            </button>
-
-            {/* Navigation Links */}
+      <header className="sticky top-0 bg-white shadow-md z-50">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
+              Book Warehouse
+            </h1>
+            <div className="md:hidden">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
+                aria-expanded={menuOpen}
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {menuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
             <div
-              className={`z-10 absolute left-0 top-full w-auto bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"
-                }`}
-              style={{
-                left: menuOpen ? "0" : "-100%", // Moves the menu to the left when closed
-              }}
+              className={`md:flex md:items-center md:space-x-4 ${
+                menuOpen ? "block" : "hidden"
+              } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
             >
-              <Link
-                href="/search"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              <button
+                onClick={() => router.push("/owner/dashboard")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => router.push("/search")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Search
-              </Link>
-              <Link
-                href="/listings"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                My Listings
-              </Link>
-              <Link
-                href="/bookings"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              </button>
+              <button
+                onClick={() => router.push("/owner/booking")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Bookings
-              </Link>
-              <Link
-                href="/earnings"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+              </button>
+              <button
+                onClick={() => router.push("/earning")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
-                Earnings
-              </Link>
-              <Link
-                href="/support"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
+                Earning
+              </button>
+              <button
+                onClick={() => router.push("/support")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Support
-              </Link>
+              </button>
+              <button
+                onClick={() => router.push("/profile")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Profile
+              </button>
             </div>
-          </nav>
-        </div>
+          </div>
+        </nav>
       </header>
 
       <main className="container mx-auto py-8 px-6">
