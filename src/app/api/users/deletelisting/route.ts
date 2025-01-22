@@ -1,4 +1,4 @@
-import Warehouse from "@/models/Warehouse";
+import Warehouse from "@/models/WarehouseModel";
 import { NextRequest, NextResponse } from "next/server";
 
 

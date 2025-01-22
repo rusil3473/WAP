@@ -1,18 +1,45 @@
 "use client";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function CustomerDashboard() {
-  const customerData = {
+  const [customerData,setCustomerData] =useState( {
     name: "",
     email: "",
     totalBookings: 0,
     activeBookings: 0,
     totalPayments: 0,
-  };
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const router=useRouter();
+  const getData=async()=>{
+    try {
+      const res= await axios.get("/api/users/dashboard/customer")
+      
+      setCustomerData({
+        name:res.data.info.user.fullName,
+        email:res.data.info.user.email,
+        totalBookings:res.data.info.totalBooking,
+        activeBookings:res.data.info.activeBooking,
+        totalPayments:res.data.info.totalPayment,
+      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
+  useEffect(()=>{
+    getData();
+
+  },[]);
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Navigation Bar */}
@@ -24,7 +51,7 @@ export default function CustomerDashboard() {
             </h1>
             <div className="md:hidden">
               <button
-                onClick={() => setMenuOpen(!menuOpen)}
+                onClick={() => setMenuOpen((prev) => !prev)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
                 aria-expanded={menuOpen}
                 aria-label="Toggle menu"
@@ -55,10 +82,10 @@ export default function CustomerDashboard() {
                 Search
               </button>
               <button
-                onClick={() => router.push("//bookings")}
+                onClick={() => router.push("/bookings/customer")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
-                Booking
+                Bookings
               </button>
 
               <button
@@ -120,7 +147,7 @@ export default function CustomerDashboard() {
               <p className="text-gray-600">Find available warehouses.</p>
             </Link>
             <Link
-              href="/bookings"
+              href="/bookings/customer"
               className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg text-center"
             >
               <h4 className="text-lg font-bold text-blue-700">View Bookings</h4>

@@ -13,7 +13,7 @@ type userType = {
 export const setToken = async (user: userType) => {
     try {
         const data = {
-            id: user._id,
+            _id: user._id,
             fullName: user.fullName,
             email:user.email,
             role: user.role,

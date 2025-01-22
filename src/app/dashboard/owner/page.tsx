@@ -63,7 +63,7 @@ export default function OwnerDashboard() {
               </button>
 
               <button
-                onClick={() => router.push("/owner/bookings")}
+                onClick={() => router.push("/bookings/owner")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Bookings
@@ -124,7 +124,7 @@ export default function OwnerDashboard() {
               <p className="text-gray-600">Add, edit, or delete your warehouses.</p>
             </Link>
             <Link
-              href="/bookings"
+              href="/bookings/owner"
               className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg text-center"
             >
               <h4 className="text-lg font-bold text-blue-700">View Bookings</h4>

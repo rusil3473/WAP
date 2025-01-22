@@ -20,7 +20,6 @@ export default function Home() {
       setAuthError(null);
       const res = await axios.post("api/users/getUserInfo", { token });
       const data = res.data.data;
-      
       switch (data.role) {
         case "customer":
           router.push("/dashboard/customer");
@@ -56,6 +55,7 @@ export default function Home() {
       }, {});
       
       const token = cookies['token'];
+      console.log(token)
       if (token) {
         getUserInfo(token);
       } else {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { getData } from "@/helper/getData";
+import getUserData from "@/helper/getUserData";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,8 +15,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Invalid token", success: false },{ status: 400 }
       );
     }
-    const { id } = userData;
-    const data=await getData(id);
+    const { _id } = userData;
+
+    const data=await getUserData(_id);
     return NextResponse.json({ message: "Got the data", success: true, data }, { status: 200 });
   }
 
