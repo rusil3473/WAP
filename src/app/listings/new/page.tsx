@@ -74,7 +74,7 @@ export default function NewWarehousePage() {
       if(token) {
     getOwner(token);}
       else{
-        toast.error(”invalid user”) ;
+        toast.error("invalid user") ;
       }
   }, []);
 
