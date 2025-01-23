@@ -7,8 +7,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 
-export default function BookNowPage() {
+interface CookieStore {
+  [key: string]: string;
+}
 
+export default function BookNowPage() {
+  const [loading,setIsLoading]=useState(false);
   const [menuOpen,setMenuOpen]=useState(false);
   const [wareHouseData, setWarehousData] = useState({
     customerId: "",
@@ -29,6 +33,7 @@ export default function BookNowPage() {
         startDate: data.startDate,
         endDate: data.endDate
       })
+      setIsLoading(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.message)
@@ -50,10 +55,26 @@ export default function BookNowPage() {
     }
   }
   useEffect(() => {
-    const token = document.cookie.split("=")[1]
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+      
+      const token = cookies['token'];
+      if (token) {
+        getWarehouseData();
+        getUserInfo(token);
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Cookie parsing error:", error);
+      setIsLoading(false);
+    }
 
-    getWarehouseData();
-    getUserInfo(token);
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const [formData, setFormData] = useState({
@@ -116,6 +137,16 @@ export default function BookNowPage() {
     }
 
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <p className="text-lg font-medium text-gray-700">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
 
   return (

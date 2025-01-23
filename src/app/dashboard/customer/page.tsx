@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+
+interface CookieStore {
+  [key: string]: string;
+}
+
 export default function CustomerDashboard() {
   const [customerData,setCustomerData] =useState( {
     name: "",
@@ -14,6 +19,7 @@ export default function CustomerDashboard() {
     totalPayments: 0,
   });
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router=useRouter();
   const getData=async()=>{
     try {
@@ -26,20 +32,44 @@ export default function CustomerDashboard() {
         activeBookings:res.data.info.activeBooking,
         totalPayments:res.data.info.totalPayment,
       });
+      setIsLoading(false);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:any) {
       console.log(error)
       toast.error(error.message)
     }
   }
-
   useEffect(()=>{
-    getData();
-
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+      
+      const token = cookies['token'];
+      if (token) {
+        getData();
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Cookie parsing error:", error);
+      setIsLoading(false);
+    }
   },[]);
 
-
-
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Navigation Bar */}

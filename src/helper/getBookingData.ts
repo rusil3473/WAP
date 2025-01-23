@@ -18,10 +18,20 @@ type bookingObj={
 }
 
 
-export default async function getBookingData(_id: string) {
+export default async function getBookingData(_id: string,type:string) {
   try {
-    const Bookings:bookingObj[]=await Booking.find({_id});
-    return Bookings;
+    if(type==="customer"){
+      const Bookings:bookingObj[]=await Booking.find({customerId:_id});
+      return Bookings;
+    }
+    else if(type==="owner"){
+      const Bookings:bookingObj[]=await Booking.find({ownerId:_id});
+      return Bookings;
+    }
+    else{
+      return "Wrong Type"
+    }
+    
   } catch (error) {
     console.log(error)
     return -1;

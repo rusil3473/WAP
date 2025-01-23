@@ -1,13 +1,16 @@
 "use client";
 import axios from "axios";
-import Link from "next/link"
-import { useParams,useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+interface CookieStore {
+  [key: string]: string;
+}
+
 export default function EditWarehousePage() {
   const [formData, setFormData] = useState({
-    _id:"",
+    _id: "",
     name: "",
     address: "",
     capacity: "",
@@ -18,8 +21,9 @@ export default function EditWarehousePage() {
     photos: "",
     status: "available",
   });
-  const [menuOpen, setMenuOpen] = useState(false);
-  const router=useRouter();
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -32,20 +36,22 @@ export default function EditWarehousePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put("/api/users/editlisting",formData)
+      await axios.put("/api/users/editlisting", formData)
+      setIsLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.respnse.data.message)
-      
     }
   };
 
   const getWarehouseData = async () => {
     try {
-      const warehouse=await axios.post("/api/users/getWarehouse", { _id: param.id })
-      const warehouseData=warehouse.data.Warehouse;
-      const {_id,name,address,capacity,pricePerMonth,facilities,startDate,endDate,photos,status}=warehouseData;
-      setFormData({_id,name,address,capacity,pricePerMonth,facilities,startDate,endDate,photos,status})
+      const warehouse = await axios.post("/api/users/getWarehouse", { _id: param.id })
+      console.log(warehouse)
+      const warehouseData = warehouse.data.Warehouse;
+      const { _id, name, address, capacity, pricePerMonth, facilities, startDate, endDate, photos, status } = warehouseData;
+      setFormData({ _id, name, address, capacity, pricePerMonth, facilities, startDate, endDate, photos, status })
+      setIsLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.response.data.message)
@@ -54,74 +60,49 @@ export default function EditWarehousePage() {
   }
 
   useEffect(() => {
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
 
-    getWarehouseData();
+      const token = cookies['token'];
+      if (token) {
+        getWarehouseData();
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Cookie parsing error:", error);
+      setIsLoading(false);
+    }
+    
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <header className="bg-blue-600 text-white shadow-md">
-        <div className="container mx-auto py-4 px-6 flex justify-between items-center">
-          <h1 className="text-2xl font-semibold">Edit Warehouse</h1>
-          <nav className="relative bg-blue-600 text-white">
-            {/* Toggle Button for Small Devices */}
-            <button
-              className="block md:hidden text-white text-2xl px-4 py-2"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              ☰
-            </button>
-
-            {/* Navigation Links */}
-            <div
-              className={`absolute left-0 top-full w-auto bg-blue-600 md:static md:w-auto md:flex md:gap-4 md:items-center ${menuOpen ? "block" : "hidden"
-                }`}
-              style={{
-                left: menuOpen ? "0" : "-100%", // Moves the menu to the left when closed
-              }}
-            >
-              <Link
-                href="/search"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Search
-              </Link>
-              <Link
-                href="/listings"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                My Listings
-              </Link>
-              <Link
-                href="/bookings"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Bookings
-              </Link>
-              <Link
-                href="/earnings"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Earnings
-              </Link>
-              <Link
-                href="/support"
-                className="block md:inline px-4 py-2 hover:bg-blue-700 text-lg"
-              >
-                Support
-              </Link>
-            </div>
-          </nav>
-        </div>
-      </header>
+      
 
 
       <header className="sticky top-0 bg-white shadow-md z-50">
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
-              Book Warehouse
+            Edit Warehouse
             </h1>
             <div className="md:hidden">
               <button
@@ -145,12 +126,11 @@ export default function EditWarehousePage() {
               </button>
             </div>
             <div
-              className={`md:flex md:items-center md:space-x-4 ${
-                menuOpen ? "block" : "hidden"
-              } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
+              className={`md:flex md:items-center md:space-x-4 ${menuOpen ? "block" : "hidden"
+                } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
             >
               <button
-                onClick={() => router.push("/dashboard/customer")}
+                onClick={() => router.push("/dashboard/owner")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Dashboard
@@ -161,6 +141,28 @@ export default function EditWarehousePage() {
               >
                 Search
               </button>
+
+              <button
+                onClick={() => router.push("/listings")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                My Listings
+              </button>
+
+              <button
+                onClick={() => router.push("/bookings")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Bookings
+              </button>
+
+              <button
+                onClick={() => router.push("/earnings")}
+                className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
+              >
+                Earnings
+              </button>
+
               <button
                 onClick={() => router.push("/profile")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"

@@ -17,7 +17,7 @@ type warehouseObj={
 
 export default async function getWarehouseData(_id: string) {
   try {
-    const Warehouses:warehouseObj[]=await Warehouse.find({_id});
+    const Warehouses:warehouseObj[]=await Warehouse.find({owner:_id});
     return Warehouses;
   } catch (error) {
     console.log(error)

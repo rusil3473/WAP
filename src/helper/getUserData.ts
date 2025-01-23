@@ -6,7 +6,7 @@ connect();
 export default async function getUserData(id: string) {
   try {
  
-     const { fullName, email, role, isVerified } = await User.findById(id);
+    const { fullName, email, role, isVerified } = await User.findById(id);
     const data = { _id:id, fullName, email, role, isVerified }
     return data ; 
 

@@ -15,15 +15,19 @@ type warehouseObject = {
   location: string;
 };
 
+interface CookieStore {
+  [key: string]: string;
+}
 
 export default function ListingsPage() {
   const [token, setToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [warehouses, setWarehouses] = useState([
     { _id: "", location: "", name: "", capacity: "", pricePerMonth: "", status: "" },
   ]);
-  
-  const[menuOpen,setMenuOpen]=useState(false);
-  const router=useRouter();
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
   const getWarehouse = async (t: string) => {
     try {
       const res = await axios.post("/api/users/getWarehouse", { token: t });
@@ -32,14 +36,17 @@ export default function ListingsPage() {
           const { _id, location, name, capacity, pricePerMonth, status } = obj;
           return { _id, location, name, capacity, pricePerMonth, status };
         });
+
+        setIsLoading(false);
         return data;
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast.error(error.response.data.message)
       console.log(error);
     }
   };
+
 
   const handleDelete = async (_id: string) => {
     const confirmed = window.confirm("Are you sure you want to delete this warehouse?");
@@ -56,12 +63,38 @@ export default function ListingsPage() {
   };
 
   useEffect(() => {
-    const t = document.cookie.split("=")[1];
-    if (t) {
-      setToken(t);
-      getWarehouse(t);
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+
+      const token = cookies['token'];
+      if (token) {
+        setToken(token);
+        getWarehouse(token);
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Cookie parsing error:", error);
+      setIsLoading(false);
     }
+
   }, []);
+
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -93,12 +126,11 @@ export default function ListingsPage() {
               </button>
             </div>
             <div
-              className={`md:flex md:items-center md:space-x-4 ${
-                menuOpen ? "block" : "hidden"
-              } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
+              className={`md:flex md:items-center md:space-x-4 ${menuOpen ? "block" : "hidden"
+                } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
             >
               <button
-                onClick={() => router.push("/owner/dashboard")}
+                onClick={() => router.push("/dashboard/owner")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Dashboard
@@ -158,9 +190,8 @@ export default function ListingsPage() {
                 <p className="text-gray-600 mb-2">Capacity: {warehouse.capacity} sq. ft.</p>
                 <p className="text-gray-600 mb-2">Price: ₹{warehouse.pricePerMonth}/month</p>
                 <p
-                  className={`text-sm font-medium mt-2 ${
-                    warehouse.status === "available" ? "text-green-500" : "text-red-500"
-                  }`}
+                  className={`text-sm font-medium mt-2 ${warehouse.status === "available" ? "text-green-500" : "text-red-500"
+                    }`}
                 >
                   Status: {warehouse.status}
                 </p>

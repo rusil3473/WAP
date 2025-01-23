@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import jwt from "jsonwebtoken"
 import getUserData from "@/helper/getUserData";
 import getBookingData from "@/helper/getBookingData";
+import getWarehouseData from "@/helper/getWarehouseData";
 
 
 
@@ -18,16 +19,17 @@ export async function GET() {
       return NextResponse.json({ messgae: "Error while getting token " }, { status: 400 })
     }
    
-    const [user, bookings] = await Promise.all([
+    const [user, bookings,Warehouses] = await Promise.all([
       getUserData(tokenData._id),
-      getBookingData(tokenData._id,"customer"),]);
-    if (!Array.isArray(bookings)) {
+      getBookingData(tokenData._id,"owner"),
+      getWarehouseData(tokenData._id)
+    ]);
+    if (!Array.isArray(bookings) || !Array.isArray(Warehouses)) {
       return NextResponse.json(
         { message: "Error retrieving bookings data" },
         { status: 500 }
       );
     }
-    const totalBooking = bookings.length;
     const activeBooking = bookings.filter((obj) => {
       return (
         obj.status === "confirmed" &&
@@ -35,11 +37,12 @@ export async function GET() {
         obj.endDate > new Date()
       );
     }).length;
+    const totalWarehouses=Warehouses.length;
     const totalPayment = bookings.reduce((sum, booking) => sum + booking.totalAmount, 0);
 
 
     const data = {
-      user, totalBooking, activeBooking, totalPayment
+      user, totalWarehouses,activeBooking, totalPayment
     }
 
     return NextResponse.json({ message: "Success", info: data }, { status: 200 })

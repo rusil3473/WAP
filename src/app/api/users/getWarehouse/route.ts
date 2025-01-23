@@ -21,7 +21,7 @@ export async function POST(req:NextRequest){
       return NextResponse.json({message:"invalid Token "},{status:200})
     }
 
-    const {id}=info;
+    const {_id:id}=info;
     const warehouseById=await Warehouse.find({owner:id});
     return NextResponse.json({message:"All warehouse with given id are sent ",Warehouse:warehouseById},{status:200})
     

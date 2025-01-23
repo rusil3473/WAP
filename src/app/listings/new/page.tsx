@@ -118,7 +118,7 @@ export default function NewWarehousePage() {
               } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
             >
               <button
-                onClick={() => router.push("/owner/dashboard")}
+                onClick={() => router.push("/dashboard/owner")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Dashboard

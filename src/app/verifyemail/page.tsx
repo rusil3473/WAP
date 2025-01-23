@@ -1,14 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+interface CookieStore {
+  [key: string]: string;
+}
 
 export default function VerifyEmailPage() {
   const router = useRouter();
   const [token, setToken] = useState("");
   const [status, setStatus] = useState<string | null>(null);
-
   const handleToken = async () => {
     try {
       await axios.post("/api/users/verifyemail", { verifyToken: token });
@@ -16,13 +18,28 @@ export default function VerifyEmailPage() {
       setTimeout(() => router.push("/login"), 3000);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      toast.error(error.data.message)
       setStatus("Failed to verify email. Please try again.");
     }
   };
 
   useEffect(() => {
-    const t = window.location.search.split("=")[1] || "";
-    setToken(t);
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+      
+      const token = cookies['token'];
+      if (token) {
+        setToken(token);
+      } 
+    } catch (error) {
+      console.error("Cookie parsing error:", error);
+      
+    }
+    
   }, []);
 
   useEffect(() => {

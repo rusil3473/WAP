@@ -1,22 +1,77 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import toast from "react-hot-toast"
+import axios from "axios"
+
+interface CookieStore {
+  [key: string]: string;
+}
 
 export default function OwnerDashboard() {
-  const ownerData = {
-    name: "Jane Doe",
-    email: "janedoe@example.com",
-    totalWarehouses: 3,
-    activeBookings: 5,
-    totalEarnings: "$5,000",
-  };
+  const [ownerData,setOwnerData] =useState( {
+    name: "",
+    email: "",
+    totalWarehouses: 0,
+    activeBookings: 0,
+    totalEarnings: "",
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const router=useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getData=async()=>{
+    try {
+      const res= await axios.get("/api/users/dashboard/owner")
+      
+      setOwnerData({
+        name:res.data.info.user.fullName,
+        email:res.data.info.user.email,
+        totalWarehouses:res.data.info.totalWarehouses,
+        activeBookings:res.data.info.activeBooking,
+        totalEarnings:res.data.info.totalPayment,
+      });
+      setIsLoading(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+  useEffect(()=>{
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+      
+      const token = cookies['token'];
+      if (token) {
+        getData();
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Cookie parsing error:", error);
+      setIsLoading(false);
+    }
+  },[]);
+
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      
-
       <header className="sticky top-0 bg-white shadow-md z-50">
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -50,13 +105,13 @@ export default function OwnerDashboard() {
               } md:block absolute md:static top-full left-0 w-full md:w-auto bg-white shadow-md md:shadow-none z-10`}
             >
               <button
-                onClick={() => router.push("/dashboard/customer")}
+                onClick={() => router.push("/search")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Search
               </button>
               <button
-                onClick={() => router.push("/search")}
+                onClick={() => router.push("/listings")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 My Listings

@@ -55,7 +55,6 @@ export default function Home() {
       }, {});
       
       const token = cookies['token'];
-      console.log(token)
       if (token) {
         getUserInfo(token);
       } else {

@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
+
+interface CookieStore {
+  [key: string]: string;
+}
 export default function ResetPassword() {
   const router = useRouter();
   const [password, setPassword] = useState("");
@@ -34,8 +38,22 @@ export default function ResetPassword() {
 
 
   useEffect(() => {
-    const t = window.location.search.split("=")[1];
-    setToken(t);
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+      
+      const token = cookies['token'];
+      if (token) {
+        setToken(token);
+      } 
+    } catch (error) {
+      console.error("Cookie parsing error:", error);
+      
+    }
+    
   }, []);
 
   return (
