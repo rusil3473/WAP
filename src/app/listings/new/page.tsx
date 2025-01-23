@@ -62,21 +62,26 @@ export default function NewWarehousePage() {
     }
   };
 
+  
   useEffect(() => {
-    try {
-      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
-        const [key, value] = cookie.trim().split('=');
-        acc[key] = value;
-        return acc;
-      }, {});
-      
-      const token = cookies['token'];
-      if(token) {
-    getOwner(token);}
-      else{
-        toast.error("invalid user") ;
-      }
-  }, []);
+  try {
+    const cookies = document.cookie.split(';').reduce((acc: Record<string, string>, cookie) => {
+      const [key, value] = cookie.trim().split('=');
+      acc[key] = value;
+      return acc;
+    }, {});
+    
+    const token = cookies['token'];
+    if (token) {
+      getOwner(token);
+    } else {
+      toast.error("invalid user");
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error("An error occurred");
+  }
+}, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 via-white to-blue-50">
