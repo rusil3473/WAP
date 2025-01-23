@@ -63,8 +63,19 @@ export default function NewWarehousePage() {
   };
 
   useEffect(() => {
-    const token = document.cookie.split("=")[1];
-    getOwner(token);
+    try {
+      const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {});
+      
+      const token = cookies['token'];
+      if(token) {
+    getOwner(token);}
+      else{
+        toast.error(”invalid user”) ;
+      }
   }, []);
 
   return (
