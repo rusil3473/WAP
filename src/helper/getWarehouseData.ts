@@ -1,7 +1,6 @@
 import Warehouse from "@/models/WarehouseModel";
 import {connect} from "@/dbConfig/db"
 connect();
-
 type warehouseObj={
   name:string,
   owner:string,
@@ -14,7 +13,6 @@ type warehouseObj={
   photos:string,
   status:string,
 }
-
 export default async function getWarehouseData(_id: string) {
   try {
     const Warehouses:warehouseObj[]=await Warehouse.find({owner:_id});

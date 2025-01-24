@@ -2,7 +2,6 @@ import Booking from "@/models/BookingModel";
 import { NextRequest, NextResponse } from "next/server";
 import {connect} from "@/dbConfig/db"
 connect()
-
 export async function POST(req:NextRequest){
   try {
     const reqBody=await req.json();

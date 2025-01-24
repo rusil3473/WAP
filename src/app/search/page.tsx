@@ -1,24 +1,20 @@
 "use client"
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import toast from "react-hot-toast";
-
 type warehouseObject = {
   _id: string;
   name: string;
   pricePerMonth: string;
- 
   capacity: string;
   status: string;
   address: string;
   startDate: string;
   endDate: string;
 };
-
 export default function Search() {
   const router = useRouter();
   const [warehouses, setWarehouses] = useState([
@@ -31,26 +27,20 @@ export default function Search() {
     startDate: null as Date | null,
     endDate: null as Date | null,
     capacity: "",
-
     pricePerMonth: "",
   });
-
   const filteredWarehouses = warehouses.filter((warehouse) => {
     const matchesSearch = warehouse.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCapacity = filters.capacity === "" || parseInt(warehouse.capacity) >= parseInt(filters.capacity);
-    
     const matchesPricePerMonth = filters.pricePerMonth === "" || parseInt(warehouse.pricePerMonth) <= parseInt(filters.pricePerMonth);
     const matchesDate =
       (!filters.startDate || new Date(warehouse.startDate) <= filters.startDate) &&
       (!filters.endDate || new Date(warehouse.endDate) >= filters.endDate);
-
     return matchesSearch && matchesCapacity  && matchesPricePerMonth && matchesDate;
   });
-
   const handleWarehouse = async (id: string) => {
     router.push(`/search/${id}`);
   };
-
   const getWarehouse = async () => {
     try {
       const res = await axios.get("/api/users/getWarehouse");
@@ -66,11 +56,9 @@ export default function Search() {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getWarehouse();
   }, []);
-
   return (
     <div className="min-h-screen flex flex-col bg-white text-blue-700">
       <header className="sticky top-0 bg-white shadow-md z-50">
@@ -123,7 +111,6 @@ export default function Search() {
               >
                 Booking
               </button>
-
               <button
                 onClick={() => router.push("/payments")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
@@ -146,7 +133,6 @@ export default function Search() {
           </div>
         </nav>
       </header>
-  
       <main className="flex-grow container mx-auto py-8">
         {/* Search and Filter Section */}
         <div className="flex justify-between items-center mb-6">
@@ -164,7 +150,6 @@ export default function Search() {
             Filter
           </button>
         </div>
-  
         {/* Filter Options */}
         {filterVisible && (
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -222,7 +207,6 @@ export default function Search() {
             </div>
           </div>
         )}
-  
         {/* Warehouse Listings */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredWarehouses.length > 0 ? (
@@ -249,7 +233,4 @@ export default function Search() {
       </footer>
     </div>
   );
-  
-  
-  
 }

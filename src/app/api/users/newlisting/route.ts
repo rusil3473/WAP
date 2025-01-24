@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Warehouse from "@/models/WarehouseModel";
 import { connect } from "@/dbConfig/db"
-
 connect()
-
 export async function POST(req: NextRequest) {
   try {
     const reqBody = await req.json();
@@ -12,11 +10,9 @@ export async function POST(req: NextRequest) {
     if(warehouse){
       return NextResponse.json({messgae:"Warehouse with same name or address already exist"},{status:400})
     }
-
     await Warehouse.create({
       name, owner, address, capacity, pricePerDay, pricePerMonth, facilities, startDate, endDate, photos, status
     });
-
     return NextResponse.json({ message: "Success " }, { status: 201 })
   } catch (error) {
     console.log(error)

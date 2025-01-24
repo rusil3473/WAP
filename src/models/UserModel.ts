@@ -17,7 +17,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  
   isVerified:{
     type:Boolean,
     required:true,
@@ -27,9 +26,6 @@ const userSchema = new mongoose.Schema({
   verifyTokenExpiry:Date,
   forgotToken:String,
   forgotTokenExpiry:Date
-
 });
-
 const User = mongoose.models.user || mongoose.model('user', userSchema);
-
 export default User;

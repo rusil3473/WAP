@@ -4,10 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
-
-
 export default function NewWarehousePage() {
- 
   const [formData, setFormData] = useState({
     name: '',
     owner: '',
@@ -20,11 +17,7 @@ export default function NewWarehousePage() {
     photos: "",
     status: 'available',
   });
-
   const router = useRouter();
-
-  
-  
   const[menuOpen,setMenuOpen]=useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -33,7 +26,6 @@ export default function NewWarehousePage() {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -45,7 +37,6 @@ export default function NewWarehousePage() {
       console.log(error);
     }
   };
-
   const getOwner = async (token: string) => {
     try {
       const res = await axios.post("/api/users/getUserInfo", { token });
@@ -57,8 +48,6 @@ export default function NewWarehousePage() {
       console.log(error);
     }
   };
-
-  
   useEffect(() => {
   try {
     const cookies = document.cookie.split(';').reduce((acc: Record<string, string>, cookie) => {
@@ -66,7 +55,6 @@ export default function NewWarehousePage() {
       acc[key] = value;
       return acc;
     }, {});
-    
     const token = cookies['token'];
     if (token) {
       getOwner(token);
@@ -78,7 +66,6 @@ export default function NewWarehousePage() {
     toast.error("An error occurred");
   }
 }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 via-white to-blue-50">
       <header className="sticky top-0 bg-white shadow-md z-50">
@@ -153,11 +140,9 @@ export default function NewWarehousePage() {
           </div>
         </nav>
       </header>
-
       <main className="container mx-auto py-8 px-6">
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl hover:scale-105 transform transition-all duration-300">
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-
             <div className="mb-6">
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">Warehouse Name</label>
               <input
@@ -170,7 +155,6 @@ export default function NewWarehousePage() {
                 required
               />
             </div>
-
             <div className="mb-6">
               <label htmlFor="owner" className="block text-sm font-medium text-gray-700">Owner</label>
               <input
@@ -183,7 +167,6 @@ export default function NewWarehousePage() {
                 disabled
               />
             </div>
-
             <div className="mb-6">
               <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
               <input
@@ -197,7 +180,6 @@ export default function NewWarehousePage() {
                 required
               />
             </div>
-
             <div className="mb-6">
               <label htmlFor="capacity" className="block text-sm font-medium text-gray-700">Capacity (sq. ft.)</label>
               <input
@@ -210,9 +192,6 @@ export default function NewWarehousePage() {
                 required
               />
             </div>
-
-            
-
             <div className="mb-6">
               <label htmlFor="pricePerMonth" className="block text-sm font-medium text-gray-700">Price per Month</label>
               <input
@@ -225,7 +204,6 @@ export default function NewWarehousePage() {
                 required
               />
             </div>
-
             <div className="mb-6">
               <label htmlFor="facilities" className="block text-sm font-medium text-gray-700">Facilities</label>
               <input
@@ -239,7 +217,6 @@ export default function NewWarehousePage() {
               />
               <small className="text-gray-500">Separate facilities with commas</small>
             </div>
-
             <div className="mb-6">
               <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Start Date</label>
               <DatePicker
@@ -252,7 +229,6 @@ export default function NewWarehousePage() {
                 required
               />
             </div>
-
             <div className="mb-6">
               <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">End Date</label>
               <DatePicker
@@ -265,7 +241,6 @@ export default function NewWarehousePage() {
                 required
               />
             </div>
-
             <div className="mb-6">
               <label htmlFor="photos" className="block text-sm font-medium text-gray-700">Photos (Image URLs)</label>
               <input
@@ -279,7 +254,6 @@ export default function NewWarehousePage() {
               />
               <small className="text-gray-500">Separate URLs with commas</small>
             </div>
-
             <div className="mb-6">
               <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
               <select
@@ -295,7 +269,6 @@ export default function NewWarehousePage() {
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-
             <div className="mb-6 text-center">
               <button
                 type="submit"
@@ -304,7 +277,6 @@ export default function NewWarehousePage() {
                 Create Listing
               </button>
             </div>
-
           </div>
         </form>
       </main>

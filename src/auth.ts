@@ -1,7 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import Google from "next-auth/providers/google";
-
-
 export const authConfig:NextAuthOptions={
   providers:[
     Google({
@@ -12,9 +10,5 @@ export const authConfig:NextAuthOptions={
   pages:{
     signIn:"/login"
   }
-  
-  
-  
 }
-
 export const handler=NextAuth(authConfig);

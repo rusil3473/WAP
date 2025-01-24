@@ -5,11 +5,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
 interface CookieStore {
   [key: string]: string;
 }
-
 export default function EditWarehousePage() {
   const [formData, setFormData] = useState({
     _id: "",
@@ -34,7 +32,6 @@ export default function EditWarehousePage() {
     }));
   };
   const param = useParams();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -45,7 +42,6 @@ export default function EditWarehousePage() {
       toast.error(error.response.data.message);
     }
   };
-
   const getWarehouseData = async () => {
     try {
       const warehouse = await axios.post("/api/users/getWarehouse", { _id: param.id });
@@ -58,7 +54,6 @@ export default function EditWarehousePage() {
       toast.error(error.response.data.message);
     }
   };
-
   useEffect(() => {
     try {
       const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
@@ -66,7 +61,6 @@ export default function EditWarehousePage() {
         acc[key] = value;
         return acc;
       }, {});
-
       const token = cookies['token'];
       if (token) {
         getWarehouseData();
@@ -79,7 +73,6 @@ export default function EditWarehousePage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
@@ -90,7 +83,6 @@ export default function EditWarehousePage() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="sticky top-0 bg-white shadow-md z-50">
@@ -181,7 +173,6 @@ export default function EditWarehousePage() {
                 required
               />
             </div>
-
             <div className="col-span-2">
               <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
                 Address
@@ -196,7 +187,6 @@ export default function EditWarehousePage() {
                 required
               />
             </div>
-
             <div>
               <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-2">
                 Capacity (sq. ft.)
@@ -211,7 +201,6 @@ export default function EditWarehousePage() {
                 required
               />
             </div>
-
             <div>
               <label htmlFor="pricePerMonth" className="block text-sm font-medium text-gray-700 mb-2">
                 Price per Month
@@ -226,7 +215,6 @@ export default function EditWarehousePage() {
                 required
               />
             </div>
-
             <div>
               <label htmlFor="facilities" className="block text-sm font-medium text-gray-700 mb-2">
                 Facilities
@@ -241,7 +229,6 @@ export default function EditWarehousePage() {
               />
               <small className="text-gray-500 text-xs">Separate with commas</small>
             </div>
-
             {/* Start Date Field */}
             <div>
               <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
@@ -261,7 +248,6 @@ export default function EditWarehousePage() {
                 required
               />
             </div>
-
             {/* End Date Field */}
             <div>
               <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-2">
@@ -285,7 +271,6 @@ export default function EditWarehousePage() {
                 required
               />
             </div>
-
             <div>
               <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
                 Status
@@ -303,7 +288,6 @@ export default function EditWarehousePage() {
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-
             <div className="col-span-2 text-center mt-6">
               <button
                 type="submit"
@@ -315,7 +299,6 @@ export default function EditWarehousePage() {
           </div>
         </form>
       </main>
-
       <footer className="bg-gray-300 text-center py-4">
         <p className="text-gray-700 text-xs">© 2025 Warehouse Aggregation Platform</p>
       </footer>

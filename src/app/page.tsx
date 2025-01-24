@@ -3,17 +3,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
-
 interface CookieStore {
   [key: string]: string;
 }
-
 export default function Home() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
-
   const getUserInfo = async (token: string) => {
     try {
       setIsLoading(true);
@@ -45,7 +42,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     try {
       const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
@@ -53,7 +49,6 @@ export default function Home() {
         acc[key] = value;
         return acc;
       }, {});
-      
       const token = cookies['token'];
       if (token) {
         getUserInfo(token);
@@ -66,7 +61,6 @@ export default function Home() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
@@ -77,7 +71,6 @@ export default function Home() {
       </div>
     );
   }
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
       {/* Header */}
@@ -88,7 +81,6 @@ export default function Home() {
             <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
               Warehouse Platform
             </h1>
-
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button
@@ -111,7 +103,6 @@ export default function Home() {
                 </svg>
               </button>
             </div>
-
             {/* Desktop menu */}
             <div className="hidden md:flex md:items-center md:space-x-4">
               <Link
@@ -140,7 +131,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-
           {/* Mobile menu with smooth transition */}
           <div 
             className={`md:hidden transition-all duration-300 ease-in-out ${
@@ -180,7 +170,6 @@ export default function Home() {
           </div>
         </nav>
       </header>
-
       {/* Error Message */}
       {authError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -188,7 +177,6 @@ export default function Home() {
           <span className="block sm:inline">{authError}</span>
         </div>
       )}
-
       {/* Main Content */}
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col items-center justify-center text-center">
         <div className="max-w-4xl mx-auto">
@@ -199,7 +187,6 @@ export default function Home() {
             Effortlessly book and manage storage spaces. Join us today!
           </p>
         </div>
-
         {/* Feature Cards */}
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 w-full max-w-6xl">
           <li className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -224,7 +211,6 @@ export default function Home() {
             </div>
           </li>
         </ul>
-
         {/* CTA Button */}
         <Link
           href="/login"
@@ -241,7 +227,6 @@ export default function Home() {
           </svg>
         </Link>
       </main>
-
       {/* Footer */}
       <footer className="w-full bg-blue-700 text-white py-6 mt-auto">
         <div className="container mx-auto px-4 text-center">

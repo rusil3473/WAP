@@ -4,11 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState,useEffect } from "react";
 import toast from "react-hot-toast"
 import axios from "axios"
-
 interface CookieStore {
   [key: string]: string;
 }
-
 export default function OwnerDashboard() {
   const [ownerData,setOwnerData] =useState( {
     name: "",
@@ -20,11 +18,9 @@ export default function OwnerDashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
   const router=useRouter();
   const [isLoading, setIsLoading] = useState(true);
-
   const getData=async()=>{
     try {
       const res= await axios.get("/api/users/dashboard/owner")
-      
       setOwnerData({
         name:res.data.info.user.fullName,
         email:res.data.info.user.email,
@@ -46,7 +42,6 @@ export default function OwnerDashboard() {
         acc[key] = value;
         return acc;
       }, {});
-      
       const token = cookies['token'];
       if (token) {
         getData();
@@ -58,8 +53,6 @@ export default function OwnerDashboard() {
       setIsLoading(false);
     }
   },[]);
-
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
@@ -116,7 +109,6 @@ export default function OwnerDashboard() {
               >
                 My Listings
               </button>
-
               <button
                 onClick={() => router.push("/bookings/owner")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
@@ -129,7 +121,6 @@ export default function OwnerDashboard() {
               >
                 Earnings
               </button>
-
               <button
                 onClick={() => router.push("/support")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
@@ -146,13 +137,11 @@ export default function OwnerDashboard() {
           </div>
         </nav>
       </header>
-
       <main className="flex-grow container mx-auto py-8 px-6">
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome, {ownerData.name}</h2>
           <p className="text-gray-600">Email: {ownerData.email}</p>
         </div>
-
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <h3 className="text-2xl font-bold text-blue-700">{ownerData.totalWarehouses}</h3>
@@ -167,7 +156,6 @@ export default function OwnerDashboard() {
             <p className="text-gray-600">Total Earnings</p>
           </div>
         </section>
-
         <section>
           <h3 className="text-2xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -202,7 +190,6 @@ export default function OwnerDashboard() {
           </div>
         </section>
       </main>
-
       <footer className="bg-gray-300 text-center py-4">
         <p className="text-gray-700">© 2025 Warehouse Aggregation Platform</p>
       </footer>

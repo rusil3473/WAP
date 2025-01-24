@@ -3,7 +3,6 @@ import { useState ,useEffect} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
-
 export default function Signup() {
   const [user, setUser] = useState({
     fullName: "",
@@ -14,7 +13,6 @@ export default function Signup() {
   });
   const [err, setErr] = useState(false);
   const router = useRouter();
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (user.fullName && user.email && user.password) {
@@ -28,7 +26,6 @@ export default function Signup() {
       alert("Please fill in all fields.");
     }
   };
-
   useEffect(() => {
     if (user.confirmPassword !== user.password) {
       setErr(true);
@@ -36,15 +33,11 @@ export default function Signup() {
       setErr(false);
     }
   }, [user.confirmPassword, user.password]);
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-blue-700">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300">
         <h1 className="text-3xl font-bold text-blue-700 text-center mb-6">Create Your Account</h1>
         <form onSubmit={handleSubmit}>
-          
-          
-        
           <div className="mb-4">
             <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
               Full Name
@@ -77,7 +70,6 @@ export default function Signup() {
               <option value="customer">Customer</option>
             </select>
           </div>
-
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
               Email Address

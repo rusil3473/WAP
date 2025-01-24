@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 interface CookieStore {
   [key: string]: string;
 }
-
 export default function VerifyEmailPage() {
   const router = useRouter();
   const [token, setToken] = useState("");
@@ -22,7 +21,6 @@ export default function VerifyEmailPage() {
       setStatus("Failed to verify email. Please try again.");
     }
   };
-
   useEffect(() => {
     try {
       const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
@@ -30,25 +28,20 @@ export default function VerifyEmailPage() {
         acc[key] = value;
         return acc;
       }, {});
-      
       const token = cookies['token'];
       if (token) {
         setToken(token);
       } 
     } catch (error) {
       console.error("Cookie parsing error:", error);
-      
     }
-    
   }, []);
-
   useEffect(() => {
     if (token.length > 0) {
       handleToken();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-blue-700">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300">

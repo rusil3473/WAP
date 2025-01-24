@@ -4,7 +4,6 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-
 export default function WarehouseDetailsPage() {
   const [warehouse, setWarehouse] = useState({
     _id: "",
@@ -21,7 +20,6 @@ export default function WarehouseDetailsPage() {
   const [menuOpen,setMenuOpen]=useState(false);
   const params = useParams();
   const router = useRouter();
-
   const fetchWarehouseDetails = async (_id: string) => {
     try {
       const res = await axios.post("/api/users/getWarehouse", { _id });
@@ -31,7 +29,6 @@ export default function WarehouseDetailsPage() {
       console.error("Error fetching warehouse details:", error);
     }
   };
-
   const formatDate = (date: string) => {
     if (!date) return "N/A";
     const d = new Date(date);
@@ -40,13 +37,11 @@ export default function WarehouseDetailsPage() {
     const year = d.getFullYear();
     return `${day}-${month}-${year}`;
   };
-
   useEffect(() => {
     if (typeof params.id === "string") {
       fetchWarehouseDetails(params.id);
     }
   }, [params.id]);
-
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 via-white to-blue-50 text-blue-700">
       <header className="sticky top-0 bg-white shadow-md z-50">
@@ -99,7 +94,6 @@ export default function WarehouseDetailsPage() {
               >
                 Booking
               </button>
-
               <button
                 onClick={() => router.push("/payments")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
@@ -122,7 +116,6 @@ export default function WarehouseDetailsPage() {
           </div>
         </nav>
       </header>
-
       <main className="container mx-auto py-8 px-6">
         <div className="bg-white rounded-lg shadow-xl p-8">
           <h2 className="text-2xl text-black font-semibold mb-6">Warehouse Details</h2>
@@ -150,7 +143,6 @@ export default function WarehouseDetailsPage() {
                 <strong>End Date:</strong> {formatDate(warehouse.endDate)}
               </p>
             </div>
-
             <div className="flex flex-col gap-4">
               {/*warehouse.photos.length > 0 ? (
                 <img
@@ -163,7 +155,6 @@ export default function WarehouseDetailsPage() {
                   No Photos Available
                 </div>
               )*/}
-
               <button
                 onClick={() => router.push(`/book/${warehouse._id}`)}
                 className="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200"
@@ -186,7 +177,6 @@ export default function WarehouseDetailsPage() {
           </div>
         </div>
       </main>
-
       <footer className="bg-gray-100 text-center py-4">
         <p className="text-gray-700">© 2025 Warehouse Aggregation Platform</p>
       </footer>

@@ -16,11 +16,8 @@ export async function POST(req: NextRequest) {
     user.password = secPass;
     user.forgotToken = undefined;
     user.forgotTokenExpiry = undefined;
-  
     await user.save();
-    
     return NextResponse.json({ message: "password reset succesful", success: true }, { status: 200 })
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.log(error)

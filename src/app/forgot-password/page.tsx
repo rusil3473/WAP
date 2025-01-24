@@ -4,16 +4,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
-
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [err, setErr] = useState(false);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     if (email) {
       try {
         await axios.post("/api/users/forgot-password", { email });
@@ -24,16 +21,13 @@ export default function ForgotPassword() {
         setTimeout(() => router.push("/login"), 2000);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error:any) {
-       
         toast.error(error.response.data.message)
         console.log(error)
       }
-    
     } else {
       setErr(true);
     }
   };
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-blue-500 to-blue-700">
       <header className="bg-transparent text-white py-8">
@@ -62,7 +56,6 @@ export default function ForgotPassword() {
                 required
               />
             </div>
-
             {err && (
               <p className="text-red-600 text-center mb-4">
                 Please enter a valid email.
@@ -73,7 +66,6 @@ export default function ForgotPassword() {
                 Password reset link has been sent!
               </p>
             )}
-
             <button
               type="submit"
               className="w-full px-6 py-3 bg-blue-600 text-white font-medium text-lg rounded-lg shadow-md hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition duration-300"
@@ -81,7 +73,6 @@ export default function ForgotPassword() {
               Reset Password
             </button>
           </form>
-
           <p className="text-center text-gray-600 mt-6">
             Remembered your password?{" "}
             <Link href="/login" className="text-blue-600 font-medium hover:underline">

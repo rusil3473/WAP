@@ -4,8 +4,6 @@ import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
-
 type warehouseObject = {
   _id: string;
   name: string;
@@ -14,18 +12,15 @@ type warehouseObject = {
   status: string;
   location: string;
 };
-
 interface CookieStore {
   [key: string]: string;
 }
-
 export default function ListingsPage() {
   const [token, setToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [warehouses, setWarehouses] = useState([
     { _id: "", location: "", name: "", capacity: "", pricePerMonth: "", status: "" },
   ]);
-
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
   const getWarehouse = async (t: string) => {
@@ -36,7 +31,6 @@ export default function ListingsPage() {
           const { _id, location, name, capacity, pricePerMonth, status } = obj;
           return { _id, location, name, capacity, pricePerMonth, status };
         });
-
         setIsLoading(false);
         return data;
       });
@@ -46,8 +40,6 @@ export default function ListingsPage() {
       console.log(error);
     }
   };
-
-
   const handleDelete = async (_id: string) => {
     const confirmed = window.confirm("Are you sure you want to delete this warehouse?");
     if (confirmed) {
@@ -61,7 +53,6 @@ export default function ListingsPage() {
       }
     }
   };
-
   useEffect(() => {
     try {
       const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
@@ -69,7 +60,6 @@ export default function ListingsPage() {
         acc[key] = value;
         return acc;
       }, {});
-
       const token = cookies['token'];
       if (token) {
         setToken(token);
@@ -81,10 +71,7 @@ export default function ListingsPage() {
       console.error("Cookie parsing error:", error);
       setIsLoading(false);
     }
-
   }, []);
-
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
@@ -95,7 +82,6 @@ export default function ListingsPage() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="sticky top-0 bg-white shadow-md z-50">
@@ -169,7 +155,6 @@ export default function ListingsPage() {
           </div>
         </nav>
       </header>
-
       <main className="container mx-auto py-8 px-6 flex-grow">
         <div className="mb-6 flex justify-between items-center">
           <h2 className="text-3xl font-bold text-gray-800">My Warehouses</h2>
@@ -180,7 +165,6 @@ export default function ListingsPage() {
             + Add New Warehouse
           </Link>
         </div>
-
         {warehouses.length > 0 && token ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {warehouses.map((warehouse) => (
@@ -211,7 +195,6 @@ export default function ListingsPage() {
           <p className="text-gray-600 text-center">No warehouses found.</p>
         )}
       </main>
-
       <footer className="bg-gray-800 text-center py-4 mt-auto">
         <p className="text-white text-sm">© 2025 Warehouse Aggregation Platform</p>
       </footer>

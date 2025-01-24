@@ -45,10 +45,7 @@ const warehouseSchema = new mongoose.Schema(
       default: "available",
     },
   },
-
 );
-
 const Warehouse =
   mongoose.models.Warehouse || mongoose.model("Warehouse", warehouseSchema);
-
 export default Warehouse;

@@ -1,9 +1,6 @@
 import { sendMail } from "@/helper/sendMail";
 import User from "@/models/UserModel";
 import { NextRequest, NextResponse } from "next/server";
-
-
-
 export async function POST(req:NextRequest) {
   try {
     const reqBody=await req.json();

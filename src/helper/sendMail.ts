@@ -3,7 +3,6 @@ import nodemailer from "nodemailer"
 import User from "@/models/UserModel"
 import bcrypt from "bcryptjs"
 connect()
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function sendMail({ _id, email, requestType }: any) {
   try {
@@ -34,14 +33,10 @@ export async function sendMail({ _id, email, requestType }: any) {
         pass: "877554e4dfaee0"
       }
     });
-
     transport.sendMail(mailOption)
     return "Mail sent"
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return error.message;
-
   }
 }
-
-

@@ -48,8 +48,6 @@ const bookingSchema = new mongoose.Schema(
     }
   }
 );
-
 // Create a model for the booking schema
 const Booking =mongoose.models.Booking || mongoose.model('Booking', bookingSchema);
-
 export default Booking;

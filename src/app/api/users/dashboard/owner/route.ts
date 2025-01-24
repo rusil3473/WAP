@@ -4,9 +4,6 @@ import jwt from "jsonwebtoken"
 import getUserData from "@/helper/getUserData";
 import getBookingData from "@/helper/getBookingData";
 import getWarehouseData from "@/helper/getWarehouseData";
-
-
-
 export async function GET() {
   try {
     const cookie = await cookies();
@@ -18,7 +15,6 @@ export async function GET() {
     if (typeof tokenData !== "object") {
       return NextResponse.json({ messgae: "Error while getting token " }, { status: 400 })
     }
-   
     const [user, bookings,Warehouses] = await Promise.all([
       getUserData(tokenData._id),
       getBookingData(tokenData._id,"owner"),
@@ -44,14 +40,10 @@ export async function GET() {
       }
       return sum;
     }, 0);
-
-
     const data = {
       user, totalWarehouses,activeBooking, totalPayment
     }
-
     return NextResponse.json({ message: "Success", info: data }, { status: 200 })
-
   } catch (error) {
     console.log(error)
     return NextResponse.json({ message: "Error while geting user data " }, { status: 500 })

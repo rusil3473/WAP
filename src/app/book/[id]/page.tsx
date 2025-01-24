@@ -5,13 +5,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import toast from "react-hot-toast";
-
-
 interface CookieStore {
   [key: string]: string;
 }
-
-
 export default function BookNowPage() {
   const [loading, setIsLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,7 +32,6 @@ export default function BookNowPage() {
   const warehouseStartDate = wareHouseData.startDate;
   const warehouseEndDate = wareHouseData.endDate;
   const param = useParams();
-
   const calculateTotalPrice = (startDate: Date | null, endDate: Date | null) => {
     if (startDate && endDate) {
       const totalAmount = (endDate.getMonth() - startDate.getMonth()) * Number(wareHouseData.pricePerMonth);
@@ -44,7 +39,6 @@ export default function BookNowPage() {
     }
     return 0;
   };
-
   const handleDateChange = (name: string, value: Date | null) => {
     setFormData((prev) => {
       const updatedForm = { ...prev, [name]: value };
@@ -54,13 +48,10 @@ export default function BookNowPage() {
       };
     });
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-
   const getWarehouseData = async () => {
     try {
       const res = await axios.post("/api/users/getWarehouse", { _id: param.id })
@@ -79,11 +70,8 @@ export default function BookNowPage() {
       console.log(error)
     }
   }
-
-
   const getUserInfo = async (token: string) => {
     try {
-
       const res = await axios.post("/api/users/getUserInfo", { token });
       const data = res.data.data;
       setWarehousData((pre) => {
@@ -100,10 +88,8 @@ export default function BookNowPage() {
       console.log(error)
     }
   }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       await axios.post("/api/users/newBooking", {
         customerId: wareHouseData.customerId,
@@ -116,15 +102,12 @@ export default function BookNowPage() {
         storageDetails: formData.storageDetails
       })
       router.push("/dashboard/customer")
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.message)
       console.log(error)
     }
-
   };
-
   useEffect(() => {
     try {
       const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
@@ -132,7 +115,6 @@ export default function BookNowPage() {
         acc[key] = value;
         return acc;
       }, {});
-
       const token = cookies['token'];
       if (token) {
         getWarehouseData();
@@ -146,7 +128,6 @@ export default function BookNowPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -211,7 +192,6 @@ export default function BookNowPage() {
           </div>
         </nav>
       </header>
-
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <form
           onSubmit={handleSubmit}
@@ -234,7 +214,6 @@ export default function BookNowPage() {
               required
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="contactInfo" className="block text-sm font-medium text-gray-700">
               Contact Information
@@ -249,7 +228,6 @@ export default function BookNowPage() {
               required
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
               Start Date
@@ -265,7 +243,6 @@ export default function BookNowPage() {
               required
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
               End Date
@@ -280,14 +257,11 @@ export default function BookNowPage() {
               placeholderText="Select end date"
               required
             />
-
           </div>
-
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Total Price</label>
             <p className="text-lg font-bold text-blue-700">₹{formData.totalPrice}</p>
           </div>
-
           <div className="mb-4">
             <label htmlFor="storageDetails" className="block text-sm font-medium text-gray-700">
               What will be stored?
@@ -302,7 +276,6 @@ export default function BookNowPage() {
               required
             />
           </div>
-
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium shadow-lg transition"
@@ -311,13 +284,9 @@ export default function BookNowPage() {
           </button>
         </form>
       </main>
-
       <footer className="bg-blue-600 text-white text-center py-4 mt-auto">
         <p>© 2025 Warehouse Aggregation Platform</p>
       </footer>
     </div>
   );
-
-
-
 }

@@ -4,12 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
-
 interface CookieStore {
   [key: string]: string;
 }
-
 export default function CustomerDashboard() {
   const [customerData,setCustomerData] =useState( {
     name: "",
@@ -24,7 +21,6 @@ export default function CustomerDashboard() {
   const getData=async()=>{
     try {
       const res= await axios.get("/api/users/dashboard/customer")
-      
       setCustomerData({
         name:res.data.info.user.fullName,
         email:res.data.info.user.email,
@@ -46,7 +42,6 @@ export default function CustomerDashboard() {
         acc[key] = value;
         return acc;
       }, {});
-      
       const token = cookies['token'];
       if (token) {
         getData();
@@ -58,7 +53,6 @@ export default function CustomerDashboard() {
       setIsLoading(false);
     }
   },[]);
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
@@ -69,7 +63,6 @@ export default function CustomerDashboard() {
       </div>
     );
   }
-  
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Navigation Bar */}
@@ -117,7 +110,6 @@ export default function CustomerDashboard() {
               >
                 Bookings
               </button>
-
               <button
                 onClick={() => router.push("/payments")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
@@ -140,7 +132,6 @@ export default function CustomerDashboard() {
           </div>
         </nav>
       </header>
-
       {/* Dashboard Content */}
       <main className="flex-grow container mx-auto py-8 px-6">
         {/* Welcome Section */}
@@ -148,7 +139,6 @@ export default function CustomerDashboard() {
           <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome, {customerData.name}</h2>
           <p className="text-gray-600">Email: {customerData.email}</p>
         </div>
-
         {/* Quick Stats Section */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
@@ -164,7 +154,6 @@ export default function CustomerDashboard() {
             <p className="text-gray-600">Total Payments</p>
           </div>
         </section>
-
         {/* Quick Links Section */}
         <section>
           <h3 className="text-2xl font-semibold text-gray-800 mb-4">Quick Actions</h3>
@@ -200,7 +189,6 @@ export default function CustomerDashboard() {
           </div>
         </section>
       </main>
-
       {/* Footer */}
       <footer className="bg-gray-300 text-center py-4">
         <p className="text-gray-700">© 2025 Warehouse Aggregation Platform</p>
@@ -208,7 +196,6 @@ export default function CustomerDashboard() {
     </div>
   );
 }
-
 /* 
 <Link
                 href="/search"

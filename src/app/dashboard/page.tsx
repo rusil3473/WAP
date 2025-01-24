@@ -3,16 +3,13 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react"
 import axios from "axios"
 import toast from "react-hot-toast";
-
 interface CookieStore {
     [key: string]: string;
   }
-
 export default function Dashboard() {
     const router=useRouter();
     const getUserInfo = async (token: string) => {
         try {
-
             const res = await axios.post("api/users/getUserInfo", { token });
             const data = res.data.data;
             switch (data.role) {
@@ -31,7 +28,6 @@ export default function Dashboard() {
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error("Authentication error:", error);
-               
             } else {
                 console.error("Unexpected error:", error);
                 toast.error("An unexpected error occurred");
@@ -40,7 +36,6 @@ export default function Dashboard() {
             toast.error(false);
         }
     };
-
     useEffect(() => {
         try {
             const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
@@ -48,7 +43,6 @@ export default function Dashboard() {
                 acc[key] = value;
                 return acc;
             }, {});
-
             const token = cookies['token'];
             if (token) {
                 getUserInfo(token);
@@ -58,8 +52,6 @@ export default function Dashboard() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
             <div className="text-center">

@@ -3,8 +3,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-
-
 interface CookieStore {
   [key: string]: string;
 }
@@ -16,7 +14,6 @@ export default function ResetPassword() {
   const [err, setErr] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSubmit = async (e: any) => {
-
     e.preventDefault();
     try {
       await axios.post("/api/users/reset-password", { token, password });
@@ -35,8 +32,6 @@ export default function ResetPassword() {
       setErr(false);
     }
   }, [confirmPassword, password]);
-
-
   useEffect(() => {
     try {
       const cookies = document.cookie.split(';').reduce<CookieStore>((acc, cookie) => {
@@ -44,18 +39,14 @@ export default function ResetPassword() {
         acc[key] = value;
         return acc;
       }, {});
-      
       const token = cookies['token'];
       if (token) {
         setToken(token);
       } 
     } catch (error) {
       console.error("Cookie parsing error:", error);
-      
     }
-    
   }, []);
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300">

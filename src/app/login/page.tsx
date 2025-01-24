@@ -5,18 +5,12 @@ import Link from "next/link";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { signIn, signOut, useSession } from "next-auth/react";
-
-
 export default function Login() {
   const [user, setUser] = useState({ email: "", password: "" });
   const router = useRouter();
   const [isSession,setIsSession]=useState(false);
   const { data: session } = useSession();
-
-  
-
   const loginUser = async (/* e: { preventDefault: () => void } */) => {
-
     try {
       if ((user.email && user.password) || session) {
         await axios.post("/api/users/login", { formData: user, session });
@@ -38,7 +32,6 @@ export default function Login() {
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[session])
-
   if (!isSession) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-blue-700">
@@ -109,21 +102,15 @@ export default function Login() {
           </div>
         </div>
       </div>
-
     );
   }
- 
-  
   return (
     <h1>Login in process wait for some time</h1>
   )
 }
-
-
 /*const getUserToken=async()=>{
       try {
         await axios.post("/api/users/login",{session:sessiom})
-        
       } catch (error) {
         console.log(error)
       }

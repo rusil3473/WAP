@@ -16,7 +16,6 @@ export default function Signup() {
   const [err, setErr] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (user.fullName && user.email && user.password) {
@@ -38,21 +37,17 @@ export default function Signup() {
       toast.error("Please fill in all fields.");
     }
   };
-
   useEffect(() => {
     if (user.confirmPassword !== user.password) {
       setErr(true);
     } else {
       setErr(false);
     }
-
     if(session){
       setUser({...user,fullName:session.user?.name || "",email:session.user?.email||""})
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.confirmPassword, user.password,session]);
-
-
   if (!session) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-blue-700">
@@ -73,7 +68,6 @@ export default function Signup() {
                 required
               />
             </div>
-
             <div className="mb-4">
               <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
                 Email Address
@@ -140,12 +134,8 @@ export default function Signup() {
           </div>
         </div>
       </div>
-
     );
   }
-
-  
-  
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-500 to-blue-700">
       <form className="w-full max-w-md bg-white p-8 rounded-lg shadow-2xl" onSubmit={handleSubmit}>
@@ -188,8 +178,5 @@ export default function Signup() {
         </button>
       </form>
     </div>
-
   );
-
-
 }

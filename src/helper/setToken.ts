@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers";
-
 type userType = {
     _id: string
     fullName: string,
@@ -9,7 +8,6 @@ type userType = {
     password: string,
     isVerified:boolean
 }
-
 export const setToken = async (user: userType) => {
     try {
         const data = {
@@ -19,7 +17,6 @@ export const setToken = async (user: userType) => {
             role: user.role,
             isVerified: user.isVerified
         }
-
         const cookie = await cookies();
         const token = jwt.sign(data, process.env.SECRET!);
         cookie.set("token", token);
