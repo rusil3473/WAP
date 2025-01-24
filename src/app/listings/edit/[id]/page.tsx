@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface CookieStore {
   [key: string]: string;
@@ -21,7 +23,7 @@ export default function EditWarehousePage() {
     photos: "",
     status: "available",
   });
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -36,28 +38,26 @@ export default function EditWarehousePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.put("/api/users/editlisting", formData)
+      await axios.put("/api/users/editlisting", formData);
       setIsLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(error.respnse.data.message)
+      toast.error(error.response.data.message);
     }
   };
 
   const getWarehouseData = async () => {
     try {
-      const warehouse = await axios.post("/api/users/getWarehouse", { _id: param.id })
-      console.log(warehouse)
+      const warehouse = await axios.post("/api/users/getWarehouse", { _id: param.id });
       const warehouseData = warehouse.data.Warehouse;
       const { _id, name, address, capacity, pricePerMonth, facilities, startDate, endDate, photos, status } = warehouseData;
-      setFormData({ _id, name, address, capacity, pricePerMonth, facilities, startDate, endDate, photos, status })
+      setFormData({ _id, name, address, capacity, pricePerMonth, facilities, startDate: new Date(startDate), endDate: new Date(endDate), photos, status });
       setIsLoading(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(error.response.data.message)
-      console.log(error)
+      toast.error(error.response.data.message);
     }
-  }
+  };
 
   useEffect(() => {
     try {
@@ -77,10 +77,8 @@ export default function EditWarehousePage() {
       console.error("Cookie parsing error:", error);
       setIsLoading(false);
     }
-    
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   if (isLoading) {
     return (
@@ -95,14 +93,11 @@ export default function EditWarehousePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      
-
-
       <header className="sticky top-0 bg-white shadow-md z-50">
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
-            Edit Warehouse
+              Edit Warehouse
             </h1>
             <div className="md:hidden">
               <button
@@ -141,28 +136,24 @@ export default function EditWarehousePage() {
               >
                 Search
               </button>
-
               <button
                 onClick={() => router.push("/listings")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 My Listings
               </button>
-
               <button
                 onClick={() => router.push("/bookings")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Bookings
               </button>
-
               <button
                 onClick={() => router.push("/earnings")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
               >
                 Earnings
               </button>
-
               <button
                 onClick={() => router.push("/profile")}
                 className="block md:inline px-4 py-2 text-blue-700 hover:bg-blue-100 transition rounded-md"
@@ -221,7 +212,6 @@ export default function EditWarehousePage() {
               />
             </div>
 
-
             <div>
               <label htmlFor="pricePerMonth" className="block text-sm font-medium text-gray-700 mb-2">
                 Price per Month
@@ -250,6 +240,50 @@ export default function EditWarehousePage() {
                 className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
               />
               <small className="text-gray-500 text-xs">Separate with commas</small>
+            </div>
+
+            {/* Start Date Field */}
+            <div>
+              <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
+                Start Date
+              </label>
+              <DatePicker
+                selected={formData.startDate}
+                onChange={(date: Date | null) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    startDate: date ?? null,
+                  }))
+                }
+                dateFormat="yyyy-MM-dd"
+                minDate={new Date()}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm"
+                required
+              />
+            </div>
+
+            {/* End Date Field */}
+            <div>
+              <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-2">
+                End Date
+              </label>
+              <DatePicker
+                selected={formData.endDate}
+                onChange={(date: Date | null) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    endDate: date ?? null,
+                  }))
+                }
+                minDate={
+                  formData.startDate
+                    ? new Date(new Date(formData.startDate).setMonth(formData.startDate.getMonth() + 1))
+                    : new Date()
+                }
+                dateFormat="yyyy-MM-dd"
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm"
+                required
+              />
             </div>
 
             <div>

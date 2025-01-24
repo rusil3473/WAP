@@ -38,7 +38,12 @@ export async function GET() {
       );
     }).length;
     const totalWarehouses=Warehouses.length;
-    const totalPayment = bookings.reduce((sum, booking) => sum + booking.totalAmount, 0);
+    const totalPayment = bookings.reduce((sum, booking) => {
+      if(booking.status==="confirmed"){
+        return (sum + booking.totalAmount)
+      }
+      return sum;
+    }, 0);
 
 
     const data = {

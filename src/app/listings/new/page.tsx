@@ -5,7 +5,9 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 
+
 export default function NewWarehousePage() {
+ 
   const [formData, setFormData] = useState({
     name: '',
     owner: '',
@@ -13,22 +15,16 @@ export default function NewWarehousePage() {
     capacity: '',
     pricePerMonth: '',
     facilities: "",
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: null as Date | null,
+    endDate: null as Date | null,
     photos: "",
     status: 'available',
   });
 
   const router = useRouter();
 
-  const handleDateChange = (date: Date | null, field: string) => {
-    if (date) {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: date,
-      }));
-    }
-  };
+  
+  
   const[menuOpen,setMenuOpen]=useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -89,7 +85,7 @@ export default function NewWarehousePage() {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl sm:text-2xl font-bold text-blue-700">
-              Book Warehouse
+          Add New Warehouse
             </h1>
             <div className="md:hidden">
               <button
@@ -248,9 +244,12 @@ export default function NewWarehousePage() {
               <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Start Date</label>
               <DatePicker
                 selected={formData.startDate}
-                onChange={(date) => handleDateChange(date, "startDate")}
+                onChange={(date) => setFormData(prev => ({ ...prev, startDate: date }))}
+                minDate={new Date()}
                 dateFormat="yyyy-MM-dd"
                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 transition duration-200"
+                placeholderText="Select start date"
+                required
               />
             </div>
 
@@ -258,9 +257,12 @@ export default function NewWarehousePage() {
               <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">End Date</label>
               <DatePicker
                 selected={formData.endDate}
-                onChange={(date) => handleDateChange(date, "endDate")}
+                onChange={(date) => setFormData(prev => ({ ...prev, endDate: date }))}
+                minDate={formData.startDate ? new Date(new Date(formData.startDate).setMonth(formData.startDate.getMonth() + 1)) : new Date()}
                 dateFormat="yyyy-MM-dd"
                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 transition duration-200"
+                placeholderText="Select end date"
+                required
               />
             </div>
 
