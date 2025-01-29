@@ -16,7 +16,8 @@ export default function BookNowPage() {
     ownerId: "",
     pricePerMonth: "",
     startDate: new Date(),
-    endDate: new Date()
+    endDate: new Date(),
+    warehouseName:"",
   })
   const [formData, setFormData] = useState({
     fullName: "",
@@ -61,7 +62,8 @@ export default function BookNowPage() {
         ownerId: data.owner,
         pricePerMonth: data.pricePerMonth,
         startDate: data.startDate,
-        endDate: data.endDate
+        endDate: data.endDate,
+        warehouseName:data.name
       })
       setIsLoading(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,6 +97,7 @@ export default function BookNowPage() {
         customerId: wareHouseData.customerId,
         ownerId: wareHouseData.ownerId,
         warehouseId: param.id,
+        warehouseName:wareHouseData.warehouseName,
         bookingDate: new Date(),
         startDate: formData.startDate,
         endDate: formData.endDate,
