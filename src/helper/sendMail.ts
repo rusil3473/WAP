@@ -1,42 +1,50 @@
-import { connect } from "@/dbConfig/db"
-import nodemailer from "nodemailer"
-import User from "@/models/UserModel"
-import bcrypt from "bcryptjs"
-connect()
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function sendMail({ _id, email, requestType }: any) {
+import nodemailer from "nodemailer";
+import { signActionToken, type ActionTokenType } from "@/lib/action-token";
+
+type SendMailArgs = {
+  userId: string;
+  email: string;
+  requestType: ActionTokenType;
+};
+
+function getDomain() {
+  return process.env.DOMAIN ?? "http://localhost:3000";
+}
+
+export async function sendMail({ userId, email, requestType }: SendMailArgs) {
   try {
-    const token = await bcrypt.hash(_id.toString(), await bcrypt.genSalt(10))
-    if (requestType === "VERIFY") {
-      await User.findByIdAndUpdate(_id, { verifyToken: token, verifyTokenExpiry:Date.now()+86400000 });
-    }
-    if (requestType === "RESET") {
-      await User.findByIdAndUpdate(_id, { forgotToken: token,forgotTokenExpiry:Date.now()+86400000  });
-    }
+    const token = signActionToken({ type: requestType, userId, email });
+    const path = requestType === "VERIFY" ? "verifyemail" : "reset-password";
+    const actionText = requestType === "VERIFY" ? "Verify Email" : "Reset Password";
+    const actionUrl = `${getDomain()}/${path}?token=${token}`;
+
     const mailOption = {
-      from: "rusilvaru555@gmail.com",
+      from: process.env.MAIL_FROM ?? "no-reply@wap.local",
       to: email,
-      subject: requestType === "VERIFY" ? "Verify Email " : "Reset Email",
-      html: `<p>
-              To ${requestType === "VERIFY" ? "Verify Email " : "Reset Password"} <a href="${process.env.DOMAIN}/${requestType === "VERIFY" ? "verifyemail" : "reset-password"}?token=${token}"> Click Here</a>
-              or
-              <p> copy paste this link 
-              <span>${process.env.DOMAIN}/${requestType === "VERIFY" ? "verifyemail" : "reset-password"}?token=${token}</span>
-              </p>
-            </p>`
+      subject: actionText,
+      html: `<p>To ${actionText}, <a href="${actionUrl}">click here</a>.</p><p>${actionUrl}</p>`,
     };
+
+    const mailtrapUser = process.env.MAILTRAP_USER;
+    const mailtrapPass = process.env.MAILTRAP_PASS;
+    if (!mailtrapUser || !mailtrapPass) {
+      console.warn("MAILTRAP_USER/MAILTRAP_PASS not configured. Skipping email send.");
+      return "Mail skipped";
+    }
+
     const transport = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
+      host: process.env.MAILTRAP_HOST ?? "sandbox.smtp.mailtrap.io",
+      port: Number(process.env.MAILTRAP_PORT ?? "2525"),
       auth: {
-        user: "91a0eb042fd17b",
-        pass: "877554e4dfaee0"
-      }
+        user: mailtrapUser,
+        pass: mailtrapPass,
+      },
     });
-    transport.sendMail(mailOption)
-    return "Mail sent"
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    return error.message;
+
+    await transport.sendMail(mailOption);
+    return "Mail sent";
+  } catch (error) {
+    console.error("sendMail failed:", error);
+    throw error;
   }
 }
