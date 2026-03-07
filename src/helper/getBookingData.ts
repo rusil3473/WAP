@@ -1,34 +1,26 @@
-import Booking from "@/models/BookingModel";
-import {connect} from "@/dbConfig/db"
-connect();
-type bookingObj={
-    _id:string,
-    customerId:string,
-    ownerId:string,
-    warehouseId:string,
-    bookingDate:Date,
-    startDate:Date,
-    endDate:Date,
-    status:string,
-    totalAmount:number,
-    paymentStatus:string,
-    storageDetails:string,
-}
-export default async function getBookingData(_id: string,type:string) {
+﻿import { query, quoteIdentifier } from "@/lib/db";
+import {
+  BOOKING_TABLE,
+  mapBookingRow,
+  type BookingRecord,
+} from "@/lib/supabase-data";
+
+const BOOKING_TABLE_SQL = quoteIdentifier(BOOKING_TABLE);
+
+export default async function getBookingData(
+  userId: string,
+  role: "customer" | "owner",
+): Promise<BookingRecord[]> {
   try {
-    if(type==="customer"){
-      const Bookings:bookingObj[]=await Booking.find({customerId:_id});
-      return Bookings;
-    }
-    else if(type==="owner"){
-      const Bookings:bookingObj[]=await Booking.find({ownerId:_id});
-      return Bookings;
-    }
-    else{
-      return "Wrong Type"
-    }
+    const column = role === "customer" ? "customer_id" : "owner_id";
+    const rows = await query<Record<string, unknown>>(
+      `select * from ${BOOKING_TABLE_SQL} where ${column} = $1`,
+      [userId],
+    );
+
+    return rows.map((row) => mapBookingRow(row));
   } catch (error) {
-    console.log(error)
-    return -1;
+    console.error("Failed to fetch booking data:", error);
+    return [];
   }
 }
