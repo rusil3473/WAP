@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# WAP
 
-## Getting Started
+Single Next.js project for both customer and owner flows.
 
-First, run the development server:
+## Hierarchy
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- `src/` application code
+- `src/app/(routes)/(auth|customer|owner|shared|legacy-redirects)` grouped frontend routes
+- `src/server/services` reusable backend business/data functions
+- `public/` static assets
+- `db/schema.sql` PostgreSQL schema (works with Neon)
+- `.env` environment variables
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Routes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Customer routes: `/customer/*`
+- Owner routes: `/owner/*`
+- Customer account routes: `/customer/profile`, `/customer/payments`
+- Shared authenticated routes: `/support`, `/profile`
+- Owner earnings route: `/earnings`
+- Onboarding routes: `/login`, `/set-password`, `/choose-role`
+- Legacy routes still work via redirects.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API Structure
 
-## Learn More
+- `api/auth/*` authentication + onboarding APIs
+- `api/customer/*` customer-specific APIs
+- `api/customer/profile` profile read/update API
+- `api/customer/payments` payment summary API
+- `api/customer/payments/pay` mark booking payment as paid
+- `api/owner/earnings` owner earnings summary + transactions
+- `api/auth/profile` authenticated profile update API
+- `api/owner/*` owner-specific APIs
 
-To learn more about Next.js, take a look at the following resources:
+## Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev`
+- `npm run lint`
+- `npm run build`
+- `npm run start`
+- `npm run db:init`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Neon Setup
 
-## Deploy on Vercel
+1. Create a Neon project and copy your connection string.
+2. Run `npm run db:init` to create missing tables/relations automatically.
+3. Optional: run `db/schema.sql` manually in Neon SQL editor.
+4. Set these env vars in `.env`:
+   - `DATABASE_URL` (use `sslmode=verify-full` for strong TLS verification)
+   - `PROFILE_TABLE` (optional, defaults to `profiles`)
+   - `WAREHOUSE_TABLE` (optional, defaults to `warehouses`)
+   - `BOOKING_TABLE` (optional, defaults to `bookings`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Auth Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Login and signup are merged on `/login`.
+- If an email does not exist, account is auto-created with `role = NULL`.
+- Users with `role = NULL` must select role once in `/choose-role`.
+- Google-first users without password are redirected to `/set-password`.
+- Email/password auth is stored in `profiles.password_hash`.
+- Google login still works through NextAuth and creates profiles automatically.
+- Password reset and email verification continue to use tokenized email links.
