@@ -1,11 +1,9 @@
-import jwt from "jsonwebtoken"
-import { cookies } from "next/headers";
+import { setAuthTokenCookie } from "@/lib/auth-token";
 type userType = {
     _id: string
     fullName: string,
     email: string,
-    role: string,
-    password: string,
+    role: "customer" | "owner" | "admin" | null,
     isVerified:boolean
 }
 export const setToken = async (user: userType) => {
@@ -17,9 +15,7 @@ export const setToken = async (user: userType) => {
             role: user.role,
             isVerified: user.isVerified
         }
-        const cookie = await cookies();
-        const token = jwt.sign(data, process.env.SECRET!);
-        cookie.set("token", token);
+        const token = await setAuthTokenCookie(data);
         return token
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:any) {

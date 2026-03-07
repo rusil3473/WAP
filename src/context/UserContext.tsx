@@ -1,26 +1,90 @@
-import { Props } from "next/script";
-import React, { createContext, useState, useContext, Dispatch, SetStateAction } from "react";
-// Define the type of User
-interface User {
+﻿"use client";
+
+import axios from "axios";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+} from "react";
+import { AppRole, normalizeRole } from "@/lib/role-routing";
+
+export interface AppUser {
   userId: string;
-  name: string;
+  fullName: string;
+  email: string;
+  role: AppRole | null;
+  isVerified: boolean;
+  hasPassword: boolean;
 }
-// Define the shape of the context data
+
 interface UserContextType {
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>; // Correct the type here
+  user: AppUser | null;
+  isLoading: boolean;
+  setUser: Dispatch<SetStateAction<AppUser | null>>;
+  refreshUser: () => Promise<void>;
 }
-// Initialize the context with default values
+
 const UserContext = createContext<UserContextType | undefined>(undefined);
-export const UserProvider: React.FC = ({children}: Props): React.ReactNode => {
-  const [user, setUser] = useState<User | null>(null);
+
+export const UserProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactNode => {
+  const [user, setUser] = useState<AppUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const refreshUser = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const response = await axios.get("/api/auth/me");
+      const data = response.data?.data as
+        | {
+            _id?: string;
+            fullName?: string;
+            email?: string;
+            role?: string;
+            isVerified?: boolean;
+            hasPassword?: boolean;
+          }
+        | undefined;
+
+      if (!data?._id) {
+        setUser(null);
+        return;
+      }
+
+      setUser({
+        userId: data._id,
+        fullName: data.fullName ?? "",
+        email: data.email ?? "",
+        role: normalizeRole(data.role),
+        isVerified: Boolean(data.isVerified),
+        hasPassword: Boolean(data.hasPassword),
+      });
+    } catch {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshUser();
+  }, [refreshUser]);
+
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, isLoading, setUser, refreshUser }}>
       {children}
     </UserContext.Provider>
   );
 };
-// Custom hook to use the UserContext
+
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -28,3 +92,4 @@ export const useUser = () => {
   }
   return context;
 };
+

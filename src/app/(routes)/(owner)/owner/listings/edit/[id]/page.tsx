@@ -1,0 +1,283 @@
+"use client";
+import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { NavBar } from "@/app/components/NavBar";
+
+export default function EditWarehousePage() {
+  const [formData, setFormData] = useState({
+    _id: "",
+    name: "",
+    address: "",
+    capacity: "",
+    pricePerMonth: "",
+    facilities: "",
+    startDate: null as Date | null,
+    endDate: null as Date | null,
+    photos: "",
+    status: "available",
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const param = useParams();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await axios.put("/api/owner/warehouses/update", formData);
+      toast.success("Warehouse updated successfully");
+      router.push("/owner/listings");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  };
+  const getWarehouseData = async () => {
+    try {
+      const warehouse = await axios.post("/api/owner/warehouses/details", {
+        _id: param.id,
+      });
+      const warehouseData = warehouse.data.Warehouse;
+      const {
+        _id,
+        name,
+        address,
+        capacity,
+        pricePerMonth,
+        facilities,
+        startDate,
+        endDate,
+        photos,
+        status,
+      } = warehouseData;
+      setFormData({
+        _id,
+        name,
+        address,
+        capacity,
+        pricePerMonth,
+        facilities,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        photos,
+        status,
+      });
+      setIsLoading(false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  };
+  useEffect(() => {
+    void getWarehouseData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <NavBar landing={false} role="Owner" />
+
+      <main className="flex-grow container mx-auto py-8 px-6">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white p-8 rounded-lg shadow-md hover:scale-105 transition-all"
+        >
+          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+            <div className="col-span-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Warehouse Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
+            <div className="col-span-2">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Address
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="capacity"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Capacity (sq. ft.)
+              </label>
+              <input
+                type="number"
+                id="capacity"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="pricePerMonth"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Price per Month
+              </label>
+              <input
+                type="number"
+                id="pricePerMonth"
+                name="pricePerMonth"
+                value={formData.pricePerMonth}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="facilities"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Facilities
+              </label>
+              <input
+                type="text"
+                id="facilities"
+                name="facilities"
+                value={formData.facilities}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+              />
+              <small className="text-gray-500 text-xs">
+                Separate with commas
+              </small>
+            </div>
+            {/* Start Date Field */}
+            <div>
+              <label
+                htmlFor="startDate"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Start Date
+              </label>
+              <DatePicker
+                selected={formData.startDate}
+                onChange={(date: Date | null) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    startDate: date ?? null,
+                  }))
+                }
+                dateFormat="yyyy-MM-dd"
+                minDate={new Date()}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm"
+                required
+              />
+            </div>
+            {/* End Date Field */}
+            <div>
+              <label
+                htmlFor="endDate"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                End Date
+              </label>
+              <DatePicker
+                selected={formData.endDate}
+                onChange={(date: Date | null) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    endDate: date ?? null,
+                  }))
+                }
+                minDate={
+                  formData.startDate
+                    ? new Date(
+                        new Date(formData.startDate).setMonth(
+                          formData.startDate.getMonth() + 1
+                        )
+                      )
+                    : new Date()
+                }
+                dateFormat="yyyy-MM-dd"
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="status"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full p-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                required
+              >
+                <option value="available">Available</option>
+                <option value="booked">Booked</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div className="col-span-2 text-center mt-6">
+              <button
+                type="submit"
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              >
+                Update Warehouse
+              </button>
+            </div>
+          </div>
+        </form>
+      </main>
+      <footer className="bg-gray-300 text-center py-4">
+        <p className="text-gray-700 text-xs">
+          &copy; 2026 Warehouse Aggregation Platform
+        </p>
+      </footer>
+    </div>
+  );
+}

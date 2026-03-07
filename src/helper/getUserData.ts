@@ -1,12 +1,10 @@
-import { connect } from "@/dbConfig/db"
-import User from "@/models/UserModel";
-connect();
-export default async function getUserData(id: string) {
+import { getProfileById, type UserProfile } from "@/lib/supabase-data";
+
+export default async function getUserData(id: string): Promise<UserProfile | null> {
   try {
-    const { fullName, email, role, isVerified } = await User.findById(id);
-    const data = { _id:id, fullName, email, role, isVerified }
-    return data ; 
+    return await getProfileById(id);
   } catch (error) {
-    return console.log(error)
+    console.error("Failed to fetch user data:", error);
+    return null;
   }
 }
